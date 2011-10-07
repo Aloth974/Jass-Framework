@@ -140,15 +140,15 @@
 //      <name>.add(real x, real y)
 
 //      Functions
-//! import "F:\Warcraft Projects\Jass\library HandleRecycle.j"
-//! import "F:\Warcraft Projects\Jass\library Hashtable.j"
-//! import "F:\Warcraft Projects\Jass\library Constants.j"
-//! import "F:\Warcraft Projects\Jass\library Maths.j"
-//! import "F:\Warcraft Projects\Jass\library Conditions.j"
-//! import "F:\Warcraft Projects\Jass\library Utilities.j"
-//! import "F:\Warcraft Projects\Jass\library Timed.j"
-//! import "F:\Warcraft Projects\Jass\library Unit.j"
+//! import "F:\Warcraft Projects\Jass\HandleRecycle.j"
+//! import "F:\Warcraft Projects\Jass\Hashtable.j"
+//! import "F:\Warcraft Projects\Jass\Constants.j"
+//! import "F:\Warcraft Projects\Jass\Maths.j"
+//! import "F:\Warcraft Projects\Jass\Conditions.j"
+//! import "F:\Warcraft Projects\Jass\Utilities.j"
+//! import "F:\Warcraft Projects\Jass\Timed.j"
+//! import "F:\Warcraft Projects\Jass\Unit.j"
 //      Systems
-//! import "F:\Warcraft Projects\Jass\library Trigger.j"
-//! import "F:\Warcraft Projects\Jass\library AIGroup.j"
-//! import "F:\Warcraft Projects\Jass\library AIPatrol.j"
+//! import "F:\Warcraft Projects\Jass\Trigger.j"
+//! import "F:\Warcraft Projects\Jass\AIGroup.j"
+//! import "F:\Warcraft Projects\Jass\AIPatrol.j"

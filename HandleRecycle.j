@@ -1,12 +1,14 @@
 library HandleRecycle initializer init
     // constant integer MaxTimer = <Number of timers you want>
     // constant integer MaxGroup = <Number of groups you want>
+    
     globals
         integer TimerCounter
         integer GroupCounter
         timer array TimerPool
         group array GroupPool
     endglobals
+    
     function NewTimer takes nothing returns timer
         if(TimerCounter<=0) then
             call BJDebugMsg("|cFFF00000Error: Code 0-0.")
@@ -23,6 +25,7 @@ library HandleRecycle initializer init
         endif
         return TimerPool[TimerCounter]
     endfunction
+    
     function DeleteTimer takes timer t returns nothing
         call PauseTimer(t)
         set TimerPool[TimerCounter]=t
@@ -46,11 +49,13 @@ library HandleRecycle initializer init
         call GroupClear(GroupPool[GroupCounter])
         return GroupPool[GroupCounter]
     endfunction
+    
     function DeleteGroup takes group g returns nothing
         call GroupClear(g)
         set GroupPool[GroupCounter]=g
         set GroupCounter=GroupCounter+1
     endfunction
+    
     private function init takes nothing returns nothing
         local integer i = 1
         loop
