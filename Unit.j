@@ -30,15 +30,14 @@ library Unit initializer init needs Constants, Maths
     endfunction
 
     function GetUnitsInRange takes real x, real y, real range, integer count returns group
-        local group g = null
-        if(CheckX(x)!=x or CheckY(y)!=y or range<=0.) then
-            return null
+        local group g = NewGroup()
+        if(range <= 0.) then
+            set range = - range
         endif
-        set g = NewGroup()
         if(count<=0) then
-            call GroupEnumUnitsInRange(g, x, y, range, FAlive)
+            call GroupEnumUnitsInRange(g, CheckX(x), CheckY(y), range, FAlive)
         else
-            call GroupEnumUnitsInRangeCounted(g, x, y, range, FAlive, count)
+            call GroupEnumUnitsInRangeCounted(g, CheckX(x), CheckY(y), range, FAlive, count)
         endif
         return g
     endfunction
@@ -49,12 +48,11 @@ library Unit initializer init needs Constants, Maths
         endif
     endfunction
     function GetEnnemiesInRange takes player p, real x, real y, real range, integer count returns group
-        if(p==null or CheckX(x)!=x or CheckY(y)!=y or range<=0.) then
-            return null
-        endif
         set buffer_PLAYER = p
         set buffer_GROUP = GetUnitsInRange(x, y, range, count)
-        call ForGroup(buffer_GROUP, function GetEnnemiesInRangeEnum)
+        if(p != null) then
+            call ForGroup(buffer_GROUP, function GetEnnemiesInRangeEnum)
+        endif
         return buffer_GROUP
     endfunction
     function GetEnnemiesInRangeOfUnit takes unit u, real range, integer count returns group
@@ -67,12 +65,11 @@ library Unit initializer init needs Constants, Maths
         endif
     endfunction
     function GetAlliesInRange takes player p, real x, real y, real range, integer count returns group
-        if(p==null or CheckX(x)!=x or CheckY(y)!=y or range<=0.) then
-            return null
-        endif
         set buffer_PLAYER = p
         set buffer_GROUP = GetUnitsInRange(x, y, range, count)
-        call ForGroup(buffer_GROUP, function GetAlliesInRangeEnum)
+        if(p != null) then
+            call ForGroup(buffer_GROUP, function GetAlliesInRangeEnum)
+        endif
         return buffer_GROUP
     endfunction
     function GetAlliesInRangeOfUnit takes unit u, real range, integer count returns group
@@ -85,11 +82,6 @@ library Unit initializer init needs Constants, Maths
         endif
     endfunction
     function GetWoundestUnitOfGroup takes group g returns unit
-        if(g==null) then
-            return null
-        elseif(CountUnitsInGroup(g)<=0) then
-            return null
-        endif
         set buffer_UNIT = FirstOfGroup(g)
         call ForGroup(g, function GetWoundestUnitOfGroupEnum)
         return buffer_UNIT
@@ -101,14 +93,9 @@ library Unit initializer init needs Constants, Maths
         endif
     endfunction
     function GetNearestUnitOfGroup takes group g, real x, real y returns unit
-        if(CheckX(x)!=x or CheckY(y)!=y or g==null) then
-            return null
-        elseif(CountUnitsInGroup(g)<=0) then
-            return null
-        endif
         set buffer_GROUP = g
-        set buffer_X = x
-        set buffer_Y = y
+        set buffer_X = CheckX(x)
+        set buffer_Y = CheckY(y)
         set buffer_UNIT = FirstOfGroup(g)
         call ForGroup(g, function GetNearestUnitOfGroupEnum)
         return buffer_UNIT
