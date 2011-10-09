@@ -1,14 +1,14 @@
 library HandleRecycle initializer init
     // constant integer MaxTimer = <Number of timers you want>
     // constant integer MaxGroup = <Number of groups you want>
-    
     globals
         integer TimerCounter
         integer GroupCounter
         timer array TimerPool
         group array GroupPool
+        integer TimerMinimumCount
+        integer GroupMinimumCount
     endglobals
-    
     function NewTimer takes nothing returns timer
         if(TimerCounter<=0) then
             call BJDebugMsg("|cFFF00000Error: Code 0-0.")
@@ -23,13 +23,18 @@ library HandleRecycle initializer init
                 set TimerPool[TimerCounter]=CreateTimer()
             endif
         endif
+        if(TimerCounter < TimerMinimumCount) then
+            set TimerMinimumCount = TimerCounter
+        endif
         return TimerPool[TimerCounter]
     endfunction
-    
     function DeleteTimer takes timer t returns nothing
         call PauseTimer(t)
         set TimerPool[TimerCounter]=t
         set TimerCounter=TimerCounter+1
+    endfunction
+    function DisplayTimer takes nothing returns nothing
+        call BJDebugMsg("Compteurs utilisés : " + I2S(MaxTimer - TimerMinimumCount) + " / " + I2S(MaxTimer))
     endfunction
 
     function NewGroup takes nothing returns group
@@ -46,14 +51,19 @@ library HandleRecycle initializer init
                 set GroupPool[GroupCounter]=CreateGroup()
             endif
         endif
+        if(GroupCounter < GroupMinimumCount) then
+            set GroupMinimumCount = GroupCounter
+        endif
         call GroupClear(GroupPool[GroupCounter])
         return GroupPool[GroupCounter]
     endfunction
-    
     function DeleteGroup takes group g returns nothing
         call GroupClear(g)
         set GroupPool[GroupCounter]=g
         set GroupCounter=GroupCounter+1
+    endfunction
+    function DisplayGroup takes nothing returns nothing
+        call BJDebugMsg("Groupes utilisés : " + I2S(MaxGroup - GroupMinimumCount) + " / " + I2S(MaxGroup))
     endfunction
     
     private function init takes nothing returns nothing
@@ -70,6 +80,8 @@ library HandleRecycle initializer init
             set i=i+1
         endloop
         set TimerCounter = MaxTimer
+        set TimerMinimumCount = MaxTimer
         set GroupCounter = MaxGroup
+        set GroupMinimumCount = MaxGroup
     endfunction
 endlibrary
