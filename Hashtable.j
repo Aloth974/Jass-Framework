@@ -45,6 +45,8 @@ library Hashtable initializer init
         constant integer BUTTON3 = 82
         constant integer BUTTON4 = 83
         constant integer BUTTON5 = 84
+        constant integer DAMAGE_SYSTEM = 175
+        constant integer DAMAGE_CASTER = 180
         constant integer DAMAGE_EVENT = 190
         constant integer ENDCHANNEL = 195
         constant integer ENDCHANNELSTOP = 196
