@@ -1,10 +1,20 @@
 // You have to define this constants :
 // constant integer GroupMax = <Number of groups you want>
 
-library RecycleGroups needs Hashtable initializer init
-	integer GroupCount
-	integer GroupMin
-	group array GroupPool
+library RecycleGroups initializer init needs Hashtable
+	globals
+		integer GroupCount
+		integer GroupMin
+		group array GroupPool
+	endglobals
+	
+	function CleanGroup takes group g returns group
+		if g != null then
+			call GroupClear(GroupPool[GroupCount])
+			call HTFlushChildHashtable(g)
+		endif
+		return g
+	endfunction
 	
 	function NewGroup takes nothing returns group
 		if GroupCount <= 0 then
@@ -25,40 +35,32 @@ library RecycleGroups needs Hashtable initializer init
 		endif
 		return CleanGroup(GroupPool[GroupCount])
 	endfunction
-		
+	
 	function DeleteGroup takes group g returns nothing
 		if g != null then
 			call CleanGroup(g)
-			if GroupCount < MaxGroup then
+			if GroupCount < GroupMax then
 				set GroupPool[GroupCount] = g
 				set GroupCount = GroupCount + 1
 			else
 				call BJDebugMsg("|cFFF00000Warning: Group pool is full. Destroying the Group.")
-				call DestroyGroup(t)
+				call DestroyGroup(g)
 			endif
 		endif
 	endfunction
-    
-	function CleanGroup takes group g returns nothing
-		if g != null then
-			call GroupClear(GroupPool[GroupCount])
-			call HTFlushChildHashtable(g)
-		endfunction
-		return g
-	endfunction
 	
 	function DisplayGroup takes nothing returns nothing
-		call BJDebugMsg("Groupes utilisés : " + I2S(MaxGroup - GroupMin) + " / " + I2S(MaxGroup))
+		call BJDebugMsg("Groupes utilisés : " + I2S(GroupMax - GroupMin) + " / " + I2S(GroupMax))
 	endfunction
 	
 	private function init takes nothing returns nothing
 		local integer i = 0
 		loop
-			exitwhen i >= MaxGroup
+			exitwhen i >= GroupMax
 			set GroupPool[i] = CreateGroup()
 			set i = i + 1
 		endloop
-		set GroupCount = MaxGroup
-		set GroupMin = MaxGroup
+		set GroupCount = GroupMax
+		set GroupMin = GroupMax
 	endfunction
 endlibrary

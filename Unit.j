@@ -2,12 +2,6 @@ library Unit initializer init needs Constants, Maths
     globals
         boolexpr FTRUE
         boolexpr FAlive
-        unit buffer_UNIT
-        group buffer_GROUP
-        integer buffer_INTEGER
-        real buffer_X
-        real buffer_Y
-        real buffer_REAL       
     endglobals
     function StopTarget takes unit u returns nothing
         call IssueImmediateOrderById(u, STOP)

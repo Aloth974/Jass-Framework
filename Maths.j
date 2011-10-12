@@ -1,4 +1,4 @@
-library Maths needs Constants initializer init
+library Maths initializer init needs Constants
 	globals
 		real MAP_MIN_X
 		real MAP_MAX_X
@@ -117,7 +117,7 @@ library Maths needs Constants initializer init
 		if IsItemVisible(it) and GetWidgetLife(it) > 0. and it != ENUMITEM then
 			if buffer_ITEM == null then
 				set buffer_ITEM = it
-			elseif DistanceBetweenXY(GetItemX(it), GetItemY(it), buffer_x, buffer_y) < DistanceBetweenXY(GetItemX(ENUMITEM), GetItemY(ENUMITEM), buffer_x, buffer_y) then
+			elseif DistanceBetweenXY(GetItemX(it), GetItemY(it), buffer_X, buffer_Y) < DistanceBetweenXY(GetItemX(ENUMITEM), GetItemY(ENUMITEM), buffer_X, buffer_Y) then
 				set buffer_ITEM = it
 			endif
 		endif

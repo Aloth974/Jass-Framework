@@ -1,4 +1,4 @@
-library AIPatrol needs Constants, HandleRecycle, Hashtable, Maths
+library AIPatrol needs Constants, RecycleTimers, Hashtable, Maths
 // Allow you to make a unit patrol between multiples locations
 // Remember : you CANNOT have MORE than 25 locations on a single unit
 // Just instanciate a AIPatrol variable and use constructor :

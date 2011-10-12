@@ -1,12 +1,16 @@
 library Constants initializer init
 	globals
 		// Buffer variables
+		unit buffer_UNIT
+        group buffer_GROUP
 		player buffer_PLAYER
 		item buffer_ITEM
+		integer buffer_INTEGER
 		real buffer_X
 		real buffer_Y
+		real buffer_REAL
 		boolean buffer_BOOL
-
+		
 		// Hashtable constants
 		constant integer BOOLEAN = 0
 		constant integer INTEGER = 1
