@@ -1,60 +1,6 @@
 library Hashtable initializer init
     globals
         hashtable HashTable
-        constant integer BOOLEAN = 0
-        constant integer INTEGER = 1
-        constant integer REAL = 2
-        constant integer STRING = 3
-        constant integer HANDLE = 4
-        constant integer WIDGET = 5
-        constant integer ITEM = 6
-        constant integer UNIT = 7
-        constant integer GROUP = 8
-        constant integer PLAYER = 9
-        constant integer FORCE = 10
-        constant integer EFFECT = 11
-        constant integer DESTRUCTABLE = 12
-        constant integer LOCATION = 13
-        constant integer TIMER = 14
-        constant integer TRIGGER = 15
-        constant integer TRIGGERACTION = 16
-        constant integer TRIGGERCONDITION = 17
-        constant integer EVENT = 18
-        constant integer TEXTTAG = 19
-        constant integer LIGHTNING = 20
-        constant integer HASHTABLE = 21
-        constant integer ABILITY = 22
-        constant integer DIALOG = 23
-        constant integer BUTTON = 24
-        constant integer INDEX = 27
-        constant integer INTEGER1 = 28
-        constant integer INTEGER2 = 29
-        constant integer INTEGER3 = 30
-        constant integer INTERVAL = 31
-        constant integer REAL1 = 32
-        constant integer REAL2 = 33
-        constant integer REAL3 = 34
-        constant integer CASTER = 37
-        constant integer TARGET = 38
-        constant integer DUMMY = 39-60
-        constant integer GROUP1 = 70
-        constant integer GROUP2 = 71
-        constant integer GROUP3 = 72
-        constant integer BUTTON1 = 80
-        constant integer BUTTON2 = 81
-        constant integer BUTTON3 = 82
-        constant integer BUTTON4 = 83
-        constant integer BUTTON5 = 84
-        constant integer DAMAGE_SYSTEM = 175
-        constant integer DAMAGE_CASTER = 180
-        constant integer DAMAGE_EVENT = 190
-        constant integer ENDCHANNEL = 195
-        constant integer ENDCHANNELSTOP = 196
-        constant integer INCUBATION = 250
-        constant integer AIGROUP = 295
-        constant integer AIPATROL = 299
-        constant integer AIPATROLCURRENT = 300
-        constant integer AIPATROLHASH = 301 // use 301-350 range
     endglobals
 //! textmacro HTBase takes TYPE, CASETYPE
     function HTSave$CASETYPE$ takes handle parent, integer child, $TYPE$ data returns nothing
