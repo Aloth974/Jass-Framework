@@ -1,8 +1,8 @@
-/////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\
-//
-//              My JASS Framework
-//
-//\\\\\\\\\\\\\\\\\\\\\\\/////////////////////////
+// * * * * * * * * * * * * * * * * * * * * * * * * *
+// *
+// *            My JASS Framework
+// *
+// * * * * * * * * * * * * * * * * * * * * * * * * *
 //
 //              Error Codes :
 //  0 : Timer Concerning
@@ -13,8 +13,8 @@
 //  3 : Not enough
 //
 //      You HAVE TO declare those constants, else it won't compile :
-// constant integer MaxTimer = <Number of timers you need>
-// constant integer MaxGroup = <Number of groups you need>
+// constant integer TimerMax = <Number of timers you need>
+// constant integer GroupMax = <Number of groups you need>
 // constant real TEXTPOSITION_X = <Text position on screen>
 // constant real TEXTPOSITION_Y = <Text position on screen>
 // constant real AIPATROL_DETECTIONRANGE = <The range to detect a unit patrolling>
@@ -140,8 +140,9 @@
 //      <name>.add(real x, real y)
 
 //      Functions
-//! import "F:\Warcraft Projects\Jass\HandleRecycle.j"
 //! import "F:\Warcraft Projects\Jass\Hashtable.j"
+//! import "F:\Warcraft Projects\Jass\RecycleTimers.j"
+//! import "F:\Warcraft Projects\Jass\RecycleGroups.j"
 //! import "F:\Warcraft Projects\Jass\Constants.j"
 //! import "F:\Warcraft Projects\Jass\Maths.j"
 //! import "F:\Warcraft Projects\Jass\Conditions.j"
