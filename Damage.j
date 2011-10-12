@@ -1,4 +1,13 @@
-// You have to declare this function : function MeleeCriticalStrikeHandler takes unit caster, unit target, real damage returns nothing
+// * * * * *
+// * You have to declare this function : function MeleeCriticalStrikeHandler takes unit caster, unit target, real damage returns nothing
+// *
+// * Based on system here : http://www.hiveworkshop.com/forums/jass-ai-scripts-tutorials-280/attack-damage-detection-engine-jass-33123/
+// * 
+// * Really disappointed on this system thought because of non-interoperability with other damage system :
+// * If unit A attacks unit B, unit B in critical-enabled for a short amout of time to detect the attack damage. But if another kind of damage come such as a spell, then this spell could take advantage of that critical system and thus cannot have is own critical system otherwise it could be critical twice.
+// * We can obviously try to tricks this as ading a trigger which detech spell cast and remove critical system on target, but then again, what about DoTs spells ? You can still attack after the spell was cast and add some extra critical damage to DoT tick.
+// * So we can disable critical system on target before each spell damage ? And but again, if a DoT tick between the time your unit attack and the target actually take the damage ? Your attack won't benefit from critical system.
+// * * * * *
 
 library Damage needs Hashtable, RecycleHandle initializer init
 	globals
@@ -38,7 +47,6 @@ library Damage needs Hashtable, RecycleHandle initializer init
 		call CleanDamageTrigger(DamageTrigger)
 		set DamageTrigger = null
 		
-		// This can proc on spell damage, needs to check damage_type to be really sure to avoid spell doing another critical strike here ...
 		call MeleeCriticalStrikeHandler(caster, target, damage)
 		
 		set target = null
@@ -57,7 +65,8 @@ library Damage needs Hashtable, RecycleHandle initializer init
 			endif
 		endif
 		
-		call CleanTimer(t) // Remove this in the future as this is a map function
+		call HTFlushChildHashtable(t)
+		call DeleteTimer(t)
 	endfunction
 	
 	function AttackTriggerActions takes nothing returns nothing
