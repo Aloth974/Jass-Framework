@@ -2,7 +2,7 @@
 // constant integer UnitMax = <Number of units you want>
 // constant integer RecyclableUnitId = <Id of dummy unit>
 
-library RecycleUnits initializer init needs Hashtable, Constants
+library RecycleUnits initializer init needs Hashtable, Constants, RecycleTimers
 	globals
 		integer UnitCount
 		integer UnitMin
@@ -48,7 +48,7 @@ library RecycleUnits initializer init needs Hashtable, Constants
 		return CleanUnit(UnitPool[UnitCount])
 	endfunction
 	
-	function DeleteUnit takes unit u returns nothing
+	function DeleteUnit__real takes unit u returns nothing
 		if u != null then
 			call CleanUnit(u)
 			if UnitCount < UnitMax then
@@ -59,6 +59,22 @@ library RecycleUnits initializer init needs Hashtable, Constants
 				call KillUnit(u)
 				call RemoveUnit(u)
 			endif
+		endif
+	endfunction
+	
+	function DeleteUnitEnd takes nothing returns nothing
+		local timer t = GetExpiredTimer()
+		call DeleteUnit__real(HTLoadUnitHandle(t, UNIT))
+		call DeleteTimer(t)
+	endfunction
+	function DeleteUnit takes unit u, real delay returns nothing
+		local timer t = null
+		if delay <= 0. then
+			call DeleteUnit__real(u)
+		else
+			set t = NewTimer()
+			call HTSaveUnitHandle(t, UNIT, u)
+			call TimerStart(t, delay, false, function DeleteUnitEnd)
 		endif
 	endfunction
 	
