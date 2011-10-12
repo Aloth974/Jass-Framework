@@ -1,10 +1,20 @@
 // You have to define this constants :
 // constant integer TimerMax = <Number of timers you want>
 
-library RecycleTimers needs Hashtable initializer init
-	integer TimerCount
-	integer TimerMin
-	timer array TimerPool
+library RecycleTimers initializer init needs Hashtable
+	globals
+		integer TimerCount
+		integer TimerMin
+		timer array TimerPool
+	endglobals
+	
+	function CleanTimer takes timer t returns timer
+		if t != null then
+			call PauseTimer(t)
+			call HTFlushChildHashtable(t)
+		endif
+		return t
+	endfunction
 	
 	function NewTimer takes nothing returns timer
 		if TimerCount <= 0 then
@@ -29,7 +39,7 @@ library RecycleTimers needs Hashtable initializer init
 	function DeleteTimer takes timer t returns nothing
 		if t != null then
 			call CleanTimer(t)
-			if TimerCount < MaxTimer then
+			if TimerCount < TimerMax then
 				set TimerPool[TimerCount] = t
 				set TimerCount = TimerCount + 1
 			else
@@ -39,26 +49,18 @@ library RecycleTimers needs Hashtable initializer init
 		endif
 	endfunction
 	
-	function CleanTimer takes timer t returns nothing
-		if t != null then
-			call PauseTimer(t)
-			call HTFlushChildHashtable(t)
-		endfunction
-		return t
-	endfunction
-	
 	function DisplayTimer takes nothing returns nothing
-		call BJDebugMsg("Compteurs utilisés : " + I2S(MaxTimer - TimerMin) + " / " + I2S(MaxTimer))
+		call BJDebugMsg("Compteurs utilisés : " + I2S(TimerMax - TimerMin) + " / " + I2S(TimerMax))
 	endfunction
 	
 	private function init takes nothing returns nothing
 		local integer i = 0
 		loop
-			exitwhen i >= MaxTimer
+			exitwhen i >= TimerMax
 			set TimerPool[i] = CreateTimer()
 			set i = i + 1
 		endloop
-		set TimerCount = MaxTimer
-		set TimerMin = MaxTimer
+		set TimerCount = TimerMax
+		set TimerMin = TimerMax
 	endfunction
 endlibrary

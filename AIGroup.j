@@ -1,4 +1,4 @@
-library AIGroup needs HandleRecycle, Hashtable, Trigger
+library AIGroup needs RecycleGroups, Hashtable, Trigger
     struct AIGroup
         group g
         trigger trig
