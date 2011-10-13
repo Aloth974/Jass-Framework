@@ -1,4 +1,3 @@
-// rename constants, change displaytext parameter order
 // * * * * * * * * * * * * * * * * * * * * * * * * *
 // *
 // *            My JASS Framework
@@ -150,28 +149,39 @@
 // UnitHasItemOfClass(unit u, itemtype itype) -> boolean
 // UnitHasItemOfType(unit u, integer itemid) -> boolean
 
-//              It will provides you new functions to use :
-//      AddAbilityTimed(unit u, real dur, integer abilid) -> nothing
-//      AddUnitUserDataTimed(unit u, integer i, real dur) -> nothing
-//      ChangeHeightOverTime(unit u, real dur, real height) -> nothing
-//      CreateDestructableTimed(integer destructid, real x, real y, real dur) -> nothing
-//      CreateEffectTimed(unit u, string path, string attach, real dur) -> nothing
-//      CreateEffectXYTimed(real x, real y, string path, real dur) -> nothing
-//      CreateLightningBetweenUnitsTimed(unit caster, unit target, string codeName, real dur) -> lightning
-//      DamageOverTime(unit caster, unit target, real tickdmg, real tickinterval, integer tickcount, integer dmgtype) -> void
-//      DamageOverTimeMatchingBuff(unit caster, unit target, real tickdmg, real tickinterval, integer tickcount, integer dmgtype, integer buffid) -> void
-//      ExecuteFuncTimed(string s, real dur) -> nothing//      NoPathingTimed(unit u, real dur) -> nothing
-//      SlideUnit(unit u, real dist, real angle, real duration, boolean linear) -> nothing
-//      StopWhenChannelEnd(unit u, timer t, boolexpr filter) -> nothing
-//      TriggerRegisterAnyUnitDamaged(trigger trig) -> nothing
-//
-//              Advanced systems use :
-//      AIGroup <name> = AIGroup.create()
-//      <name>.add(unit u)
-//      <name>.delete() & <name>.destroy()
-//
-//      AIPatrol <name> = AIPatrol.create(unit u, real x1, real y1, real x2, real y2)
-//      <name>.add(real x, real y)
+// * * * * * * * * * *
+// * Timed
+// * * * * * * * * * *
+// AddAbilityTimed(unit u, real dur, integer abilid) -> nothing
+// AddUnitUserDataTimed(unit u, integer i, real dur) -> nothing
+// ChangeHeightOverTime(unit u, real dur, real height) -> nothing
+// CreateDestructableTimed(integer destructid, real x, real y, real dur) -> nothing
+// CreateEffectTimed(unit u, string path, string attach, real dur) -> nothing
+// CreateEffectXYTimed(real x, real y, string path, real dur) -> nothing
+// CreateLightningBetweenUnitsTimed(unit caster, unit target, string codeName, real dur) -> lightning
+// DamageOverTime(unit caster, unit target, real tickdmg, real tickinterval, integer tickcount, integer dmgtype) -> void
+// DamageOverTimeMatchingBuff(unit caster, unit target, real tickdmg, real tickinterval, integer tickcount, integer dmgtype, integer buffid) -> void
+// ExecuteFuncTimed(string s, real dur) -> nothing//      NoPathingTimed(unit u, real dur) -> nothing
+// SlideUnit(unit u, real dist, real angle, real duration, boolean linear) -> nothing
+
+// * * * * * * * * * *
+// * Trigger
+// * * * * * * * * * *
+// StopWhenChannelEnd(unit u, timer t, boolexpr filter) -> nothing
+// TriggerRegisterAnyUnitDamaged(trigger trig) -> nothing
+
+// * * * * * * * * * *
+// * AIGroup
+// * * * * * * * * * *
+// AIGroup <name> = AIGroup.create()
+// <name>.add(unit u)
+// <name>.delete() & <name>.destroy()
+
+// * * * * * * * * * *
+// * AIPatrol
+// * * * * * * * * * *
+// AIPatrol <name> = AIPatrol.create(unit u, real x1, real y1, real x2, real y2)
+// <name>.add(real x, real y)
 
 //      Functions
 //! import "\\ALDORANDE\Developpement\Jass\Framework\Constants.j"

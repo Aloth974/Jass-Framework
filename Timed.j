@@ -196,7 +196,8 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 		local unit u = HTLoadUnitHandle(t, UNIT) 
 		local integer i = HTLoadInteger(t, INDEX)
 		local real duration = HTLoadReal(t, REAL)
-		local real dist = HTLoadReal(t, REAL1)
+//		local real dist = HTLoadReal(t, REAL1)
+		local real dist = HTLoadReal(t, REAL1) * ( GetUnitMoveSpeed(u) / GetUnitDefaultMoveSpeed(u) )
 		local real angle = HTLoadReal(t, REAL2)
 		local real xc = GetUnitX(u)
 		local real yc = GetUnitY(u)
@@ -204,8 +205,7 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 		if i <= 0 then
 			call DeleteTimer(t)
 		else
-			// if ! rooted
-				// if slowed, dist /= 2
+if GetUnitMoveSpeed(u) > 0. then
 			if HTLoadBoolean(t, BOOLEAN) then
 				if GetUnitDefaultMoveSpeed(u) > 0. then
 					if IsUnitInGroup(u, NoPathingGroup) == true then
@@ -230,6 +230,7 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 					call SetUnitPosition(u, PolarX(xc, temp, angle), PolarY(yc, temp, angle))
 				endif
 			endif
+endif
 			call HTSaveInteger(t, INDEX, i - 1)
 			call TimerStart(t, duration * 0.05, false, function SlideUnitTick)
 		endif
