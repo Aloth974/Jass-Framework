@@ -25,7 +25,7 @@ library Utilities initializer init needs Constants
 		endif
 	endfunction
 	
-	function DisplayTextToAll takes string text, real duration returns nothing
+	function DisplayTextToAll takes real duration, string text returns nothing
 		if duration <= 0. then
 			call DisplayTextToPlayer(GetLocal(), TextPositionX, TextPositionY, text)
 		else
@@ -33,7 +33,7 @@ library Utilities initializer init needs Constants
 		endif
 	endfunction
 	
-	function DisplayTextToOne takes player p, string text, real duration returns nothing
+	function DisplayTextToOne takes player p, real duration, string text returns nothing
 		if duration <= 0. then
 			call DisplayTextToPlayer(p, TextPositionX, TextPositionY, text)
 		else
