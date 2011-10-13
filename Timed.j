@@ -20,7 +20,7 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 	function ExecuteFuncTimed takes string funcname, real duration returns nothing
 		local timer t = null
 		if funcname != null then
-			if dur <= 0. then
+			if duration <= 0. then
 				call ExecuteFunc(funcname)
 			else
 				set t = NewTimer()
@@ -86,7 +86,7 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 	function CreateEffectTimedEnd takes nothing returns nothing
 		local timer t = GetExpiredTimer()
 		local integer i = HTLoadInteger(t, INDEX)
-		local real duration HTLoadReal(t, REAL)
+		local real duration = HTLoadReal(t, REAL)
 		if GetWidgetLife(HTLoadUnitHandle(t, UNIT)) <= 0. then
 			set i = 0
 		endif

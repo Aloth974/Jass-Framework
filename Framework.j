@@ -75,8 +75,8 @@
 // * Utilities
 // * * * * * * * * * *
 // CombatText(string s, real size, unit u, real r, real g, real b, real angMin, real angMax) -> nothing
-// DisplayTextToAll(string text, real duration) -> nothing
-// DisplayTextToOne(player p, string text, real duration) -> nothing
+// DisplayTextToAll(real duration, string text) -> nothing
+// DisplayTextToOne(player p, real duration, string text) -> nothing
 // GetColorByPlayerId(integer i) -> string
 // TriggerRegisterAnyUnitEvent(trigger trig, playerunitevent ev, boolexpr filt)
 // GetItemOfTypeInUnitInventory(unit u, integer itemid) -> item

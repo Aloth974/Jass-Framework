@@ -38,12 +38,10 @@ library Constants initializer init
 		constant integer DIALOG = 23
 		constant integer BUTTON = 24
 		constant integer INDEX = 25
-		constant integer INTEGER = 26
 		constant integer INTEGER1 = 27
 		constant integer INTEGER2 = 28
 		constant integer INTEGER3 = 29
 		constant integer INTERVAL = 30
-		constant integer REAL = 31
 		constant integer REAL1 = 32
 		constant integer REAL2 = 33
 		constant integer REAL3 = 34
