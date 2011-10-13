@@ -50,39 +50,55 @@
 // * * * * * * * * * *
 // * RecycleTimers
 // * * * * * * * * * *
+// CleanTimer(timer t) -> timer
 // NewTimer() -> timer
 // DeleteTimer(timer t) -> nothing
-// CleanTimer(timer t) -> timer
 // DisplayTimer() -> nothing
 
 // * * * * * * * * * *
 // * RecycleGroups
 // * * * * * * * * * *
+// CleanGroup(group g) -> group
 // NewGroup() -> group
 // DeleteGroup(group g) -> nothing
-// CleanGroup(group g) -> group
 // DisplayGroup() -> nothing
+
+// * * * * * * * * * *
+// * RecycleUnits
+// * * * * * * * * * *
+// CleanUnit(unit u) -> unit
+// NewUnit() -> unit
+// DeleteUnit(unit u, real delay) -> nothing
+// DisplayUnit() -> nothing
+
+// * * * * * * * * * *
+// * Utilities
+// * * * * * * * * * *
+// CombatText(string s, real size, unit u, real r, real g, real b, real angMin, real angMax) -> nothing
+// DisplayTextToAll(real dur, string s) -> nothing
+// DisplayTextToOne(player p, real dur, string s) -> nothing
+// GetColorByPlayerId(integer i) -> string
+// TriggerRegisterAnyUnitEvent(trigger trig, playerunitevent ev, boolexpr filt)
+// GetItemOfTypeInUnitInventory(unit u, integer itemid) -> item
+// GetItemSlot(unit u, item it) -> integer
+// ModifyLife(unit u, real delta) -> real
+// ModifyMana(unit u, real delta) -> real
 
 //              It will provides you new functions to use :
 //      AddAbilityTimed(unit u, real dur, integer abilid) -> nothing
 //      AddUnitUserDataTimed(unit u, integer i, real dur) -> nothing
 //      ChangeHeightOverTime(unit u, real dur, real height) -> nothing
-//      CombatText(string s, real size, unit u, real r, real g, real b, real angMin, real angMax) -> nothing
 //      CreateDestructableTimed(integer destructid, real x, real y, real dur) -> nothing
 //      CreateEffectTimed(unit u, string path, string attach, real dur) -> nothing
 //      CreateEffectXYTimed(real x, real y, string path, real dur) -> nothing
 //      CreateLightningBetweenUnitsTimed(unit caster, unit target, string codeName, real dur) -> lightning
 //      DamageOverTime(unit caster, unit target, real tickdmg, real tickinterval, integer tickcount, integer dmgtype) -> void
 //      DamageOverTimeMatchingBuff(unit caster, unit target, real tickdmg, real tickinterval, integer tickcount, integer dmgtype, integer buffid) -> void
-//      DisplayTextToAll(real dur, string s) -> nothing
-//      DisplayTextToOne(player p, real dur, string s) -> nothing//      ExecuteFuncTimed(string s, real dur) -> nothing
+//      ExecuteFuncTimed(string s, real dur) -> nothing
 //      GetAlliesInRange(player p, real x, real y, real range, integer count) -> group
 //      GetAlliesInRangeOfUnit(unit u, real range, integer count) -> group
-//      GetColorByPlayerId(integer i) -> string
 //      GetEnnemiesInRange(player p, real x, real y, real range, integer count) -> group
 //      GetEnnemiesInRangeOfUnit(unit u, real range, integer count) -> group
-//      GetItemOfTypeInUnitInventory(unit u, integer itemid) -> item
-//      GetItemSlot(unit u, item it) -> integer
 //      GetNearestAllyInRange(player p, real x, real y, real range) -> unit
 //      GetNearestAllyInRangeOfUnit(unit u, real range) -> unit
 //      GetNearestAllyHeroInRange(player p, real x, real y, real range) -> unit
@@ -131,15 +147,12 @@
 //      IsTriggerUnitHero() -> boolean
 //      IsUnitBehindTarget(unit caster, unit target) -> boolean
 //      IsUnitHero(unit u) -> boolean
-//      ModifyLife(unit u, real delta) -> real
-//      ModifyMana(unit u, real delta) -> real
 //      NoPathingTimed(unit u, real dur) -> nothing
 //      ResetAbilityCooldown(unit u, integer abilid) -> real
 //      SlideUnit(unit u, real dist, real angle, real duration, boolean linear) -> nothing
 //      StopTarget(unit u) -> nothing
 //      StopWhenChannelEnd(unit u, timer t, boolexpr filter) -> nothing
 //      TriggerRegisterAnyUnitDamaged(trigger trig) -> nothing
-//      TriggerRegisterAnyUnitEvent(trigger trig, playerunitevent ev, boolexpr filt)
 //      UnitHasEmptySlot(unit u) -> boolean
 //      UnitHasItemOfClass(unit u, itemtype itype) -> boolean
 //      UnitHasItemOfType(unit u, integer itemid) -> boolean
