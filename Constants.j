@@ -2,7 +2,7 @@ library Constants initializer init
 	globals
 		// Buffer variables
 		unit buffer_UNIT
-        group buffer_GROUP
+		group buffer_GROUP
 		player buffer_PLAYER
 		item buffer_ITEM
 		integer buffer_INTEGER
