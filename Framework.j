@@ -162,7 +162,7 @@
 // DamageOverTime(unit caster, unit target, real tickdmg, real tickinterval, integer tickcount, integer dmgtype) -> void
 // DamageOverTimeMatchingBuff(unit caster, unit target, real tickdmg, real tickinterval, integer tickcount, integer dmgtype, integer buffid) -> void
 // ExecuteFuncTimed(string s, real dur) -> nothing//      NoPathingTimed(unit u, real dur) -> nothing
-// SlideUnit(unit u, real dist, real angle, real duration, boolean linear) -> nothing
+// SlideUnit(unit u, real dist, real angle, real duration, boolean linear, boolean takeCareOfMoveSpeed) -> nothing
 
 // * * * * * * * * * *
 // * Trigger

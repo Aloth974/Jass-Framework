@@ -196,47 +196,54 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 		local unit u = HTLoadUnitHandle(t, UNIT) 
 		local integer i = HTLoadInteger(t, INDEX)
 		local real duration = HTLoadReal(t, REAL)
-//		local real dist = HTLoadReal(t, REAL1)
-		local real dist = HTLoadReal(t, REAL1) * ( GetUnitMoveSpeed(u) / GetUnitDefaultMoveSpeed(u) )
+		local real dist = HTLoadReal(t, REAL1)
 		local real angle = HTLoadReal(t, REAL2)
 		local real xc = GetUnitX(u)
 		local real yc = GetUnitY(u)
 		local real temp = 0.
+		local boolean moveSpeed = HTLoadBoolean(t, BOOLEAN1)
 		if i <= 0 then
 			call DeleteTimer(t)
 		else
-if GetUnitMoveSpeed(u) > 0. then
-			if HTLoadBoolean(t, BOOLEAN) then
-				if GetUnitDefaultMoveSpeed(u) > 0. then
-					if IsUnitInGroup(u, NoPathingGroup) == true then
-						call SetUnitX(u, PolarX(xc, dist * 0.05, angle))
-						call SetUnitY(u, PolarY(yc, dist * 0.05, angle))
-					else
-						call SetUnitXY(u, PolarX(xc, dist * 0.05, angle), PolarY(yc, dist * 0.05, angle))
-					endif
-				else
-					call SetUnitPosition(u, PolarX(xc, dist * 0.05, angle), PolarY(yc, dist * 0.05, angle))
-				endif
-			else
-				set temp = dist * Pow(0.89, (21. - I2R(i + 1))) - dist * Pow(0.89, (21. - I2R(i)))
-				if GetUnitDefaultMoveSpeed(u) > 0. then
-					if IsUnitInGroup(u, NoPathingGroup) == true then
-						call SetUnitX(u, PolarX(xc, temp, angle))
-						call SetUnitY(u, PolarY(yc, temp, angle))
-					else
-						call SetUnitXY(u, PolarX(xc, temp, angle), PolarY(yc, temp, angle))
-					endif
-				else
-					call SetUnitPosition(u, PolarX(xc, temp, angle), PolarY(yc, temp, angle))
+			if moveSpeed then
+				set dist = dist * (GetUnitMoveSpeed(u) / GetUnitDefaultMoveSpeed(u))
+				if GetUnitMoveSpeed(u) > 0. then
+					set moveSpeed = false
 				endif
 			endif
-endif
+			
+			if not moveSpeed then
+				if HTLoadBoolean(t, BOOLEAN) then
+					if GetUnitDefaultMoveSpeed(u) > 0. then
+						if IsUnitInGroup(u, NoPathingGroup) == true then
+							call SetUnitX(u, PolarX(xc, dist * 0.05, angle))
+							call SetUnitY(u, PolarY(yc, dist * 0.05, angle))
+						else
+							call SetUnitXY(u, PolarX(xc, dist * 0.05, angle), PolarY(yc, dist * 0.05, angle))
+						endif
+					else
+						call SetUnitPosition(u, PolarX(xc, dist * 0.05, angle), PolarY(yc, dist * 0.05, angle))
+					endif
+				else
+					set temp = dist * Pow(0.89, (21. - I2R(i + 1))) - dist * Pow(0.89, (21. - I2R(i)))
+					if GetUnitDefaultMoveSpeed(u) > 0. then
+						if IsUnitInGroup(u, NoPathingGroup) == true then
+							call SetUnitX(u, PolarX(xc, temp, angle))
+							call SetUnitY(u, PolarY(yc, temp, angle))
+						else
+							call SetUnitXY(u, PolarX(xc, temp, angle), PolarY(yc, temp, angle))
+						endif
+					else
+						call SetUnitPosition(u, PolarX(xc, temp, angle), PolarY(yc, temp, angle))
+					endif
+				endif
+			endif
 			call HTSaveInteger(t, INDEX, i - 1)
 			call TimerStart(t, duration * 0.05, false, function SlideUnitTick)
 		endif
 		set u = null
 	endfunction
-	function SlideUnit takes unit u, real dist, real angle, real duration, boolean linear returns nothing
+	function SlideUnit takes unit u, real dist, real angle, real duration, boolean linear, boolean takeCareOfMoveSpeed returns nothing
 		local timer t = null
 		if u != null and dist != 0. and duration > 0. then
 			if GetWidgetLife(u) > 0. then
@@ -246,6 +253,7 @@ endif
 				set t = NewTimer()
 				call HTSaveUnitHandle(t, UNIT, u)
 				call HTSaveBoolean(t, BOOLEAN, linear)
+				call HTSaveBoolean(t, BOOLEAN1, takeCareOfMoveSpeed)
 				call HTSaveInteger(t, INDEX, 20)
 				call HTSaveReal(t, REAL, duration)
 				call HTSaveReal(t, REAL1, dist)

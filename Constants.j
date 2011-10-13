@@ -38,6 +38,7 @@ library Constants initializer init
 		constant integer DIALOG = 23
 		constant integer BUTTON = 24
 		constant integer INDEX = 25
+		constant integer BOOLEAN1 = 26
 		constant integer INTEGER1 = 27
 		constant integer INTEGER2 = 28
 		constant integer INTEGER3 = 29
