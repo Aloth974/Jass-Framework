@@ -37,11 +37,13 @@ library Constants initializer init
 		constant integer ABILITY = 22
 		constant integer DIALOG = 23
 		constant integer BUTTON = 24
-		constant integer INDEX = 27
-		constant integer INTEGER1 = 28
-		constant integer INTEGER2 = 29
-		constant integer INTEGER3 = 30
-		constant integer INTERVAL = 31
+		constant integer INDEX = 25
+		constant integer INTEGER = 26
+		constant integer INTEGER1 = 27
+		constant integer INTEGER2 = 28
+		constant integer INTEGER3 = 29
+		constant integer INTERVAL = 30
+		constant integer REAL = 31
 		constant integer REAL1 = 32
 		constant integer REAL2 = 33
 		constant integer REAL3 = 34
@@ -123,6 +125,21 @@ library Constants initializer init
 		// Players constants
 		player array Players
 		player localPlayer
+		
+		// Damage type constants
+		constant integer UNKNOWN = 0
+		constant integer FIRE = 8
+		constant integer COLD = 9
+		constant integer POISON = 11
+		constant integer DISEASE = 12
+		constant integer DIVINE = 13
+		constant integer MAGIC = 14
+		constant integer SONIC = 15
+		constant integer ACID = 16
+		constant integer DEATH = 18
+		constant integer MIND = 19
+		constant integer PLANT = 20
+		constant integer UNIVERSAL = 26
 	endglobals
 	
 	constant function GetPlayer takes integer i returns player
