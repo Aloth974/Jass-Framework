@@ -200,14 +200,13 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 		local real angle = HTLoadReal(t, REAL2)
 		local real xc = GetUnitX(u)
 		local real yc = GetUnitY(u)
-		local real temp = 0.
 		local boolean moveSpeed = HTLoadBoolean(t, BOOLEAN1)
 		if i <= 0 then
 			call DeleteTimer(t)
 		else
 			if moveSpeed then
 				set dist = dist * (GetUnitMoveSpeed(u) / GetUnitDefaultMoveSpeed(u))
-				if GetUnitMoveSpeed(u) > 0. then
+				if GetUnitMoveSpeed(u) > 0. and dist > 0. then
 					set moveSpeed = false
 				endif
 			endif
@@ -225,16 +224,16 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 						call SetUnitPosition(u, PolarX(xc, dist * 0.05, angle), PolarY(yc, dist * 0.05, angle))
 					endif
 				else
-					set temp = dist * Pow(0.89, (21. - I2R(i + 1))) - dist * Pow(0.89, (21. - I2R(i)))
+					set dist = dist * Pow(0.89, (21. - I2R(i + 1))) - dist * Pow(0.89, (21. - I2R(i)))
 					if GetUnitDefaultMoveSpeed(u) > 0. then
 						if IsUnitInGroup(u, NoPathingGroup) == true then
-							call SetUnitX(u, PolarX(xc, temp, angle))
-							call SetUnitY(u, PolarY(yc, temp, angle))
+							call SetUnitX(u, PolarX(xc, dist, angle))
+							call SetUnitY(u, PolarY(yc, dist, angle))
 						else
-							call SetUnitXY(u, PolarX(xc, temp, angle), PolarY(yc, temp, angle))
+							call SetUnitXY(u, PolarX(xc, dist, angle), PolarY(yc, dist, angle))
 						endif
 					else
-						call SetUnitPosition(u, PolarX(xc, temp, angle), PolarY(yc, temp, angle))
+						call SetUnitPosition(u, PolarX(xc, dist, angle), PolarY(yc, dist, angle))
 					endif
 				endif
 			endif

@@ -94,6 +94,7 @@
 // GetAlliesInRangeOfUnit(unit u, real range, integer count) -> group
 // GetEnnemiesInRange(player p, real x, real y, real range, integer count) -> group
 // GetEnnemiesInRangeOfUnit(unit u, real range, integer count) -> group
+// GetFarUnitOfGroup(real x, real y, group g) -> unit
 // GetNearestAllyInRange(player p, real x, real y, real range) -> unit
 // GetNearestAllyInRangeOfUnit(unit u, real range) -> unit
 // GetNearestAllyHeroInRange(player p, real x, real y, real range) -> unit
