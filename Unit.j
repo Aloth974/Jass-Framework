@@ -97,6 +97,20 @@ library Unit initializer init needs Constants, Maths, RecycleGroups
 		call ForGroup(g, function GetNearestUnitOfGroupEnum)
 		return buffer_UNIT
 	endfunction
+	
+	function GetFarUnitOfGroupEnum takes nothing returns nothing
+		if DistanceBetweenXY(GetUnitX(GetEnumUnit()), GetUnitY(GetEnumUnit()), buffer_X, buffer_Y) > DistanceBetweenXY(GetUnitX(buffer_UNIT), GetUnitY(buffer_UNIT), buffer_X, buffer_Y) then
+			set buffer_UNIT = GetEnumUnit()
+		endif
+	endfunction
+	function GetFarUnitOfGroup takes group g, real x, real y returns unit
+		set buffer_GROUP = g
+		set buffer_X = CheckX(x)
+		set buffer_Y = CheckY(y)
+		set buffer_UNIT = FirstOfGroup(g)
+		call ForGroup(g, function GetFarUnitOfGroupEnum)
+		return buffer_UNIT
+	endfunction
 
 	function GroupRemoveStructuresEnum takes nothing returns nothing
 		if IsUnitType(GetEnumUnit(), UNIT_TYPE_STRUCTURE) == true then

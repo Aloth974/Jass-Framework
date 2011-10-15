@@ -1,4 +1,8 @@
-library Conditions needs Constants, Maths, Unit
+library Conditions initializer init needs Constants, Maths, Unit
+	globals
+		boolexpr FIsHero
+	endglobals
+	
 	// Filters
 	function IsHuman takes nothing returns boolean
 		return GetPlayerSlotState(GetFilterPlayer()) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(GetFilterPlayer()) == MAP_CONTROL_USER
@@ -181,5 +185,9 @@ library Conditions needs Constants, Maths, Unit
 	endfunction
 	function IsNearbyAllyHeroOfUnit takes unit u, real range returns boolean
 		return IsNearbyAllyHero(GetOwningPlayer(u), GetUnitX(u), GetUnitY(u), range)
+	endfunction
+	
+	private function init takes nothing returns nothing
+		set FIsHero = Filter(function IsHero)
 	endfunction
 endlibrary
