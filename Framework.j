@@ -197,5 +197,6 @@
 //! import "\\ALDORANDE\Developpement\Jass\Framework\Unit.j"
 //      Systems
 //! import "\\ALDORANDE\Developpement\Jass\Framework\Trigger.j"
-//! import "\\ALDORANDE\Developpement\Jass\Framework\AIGroup.j"
-//! import "\\ALDORANDE\Developpement\Jass\Framework\AIPatrol.j"
+// import "\\ALDORANDE\Developpement\Jass\Framework\AIGroup.j"
+// import "\\ALDORANDE\Developpement\Jass\Framework\AIPatrol.j"
+//! import "\\ALDORANDE\Developpement\Jass\Framework\Systems\Buffs.j"

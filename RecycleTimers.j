@@ -16,6 +16,12 @@ library RecycleTimers initializer init needs Hashtable
 		return t
 	endfunction
 	
+	function GetTimer takes nothing returns timer
+		local timer t = GetExpiredTimer()
+		call PauseTimer(t)
+		return t
+	endfunction
+	
 	function NewTimer takes nothing returns timer
 		if TimerCount <= 0 then
 			call BJDebugMsg("|cFFF00000Warning: Timer pool empty. Creating a new one.")
