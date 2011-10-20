@@ -1,28 +1,61 @@
-library Ticker initializer init
+library Ticker initializer init needs Hashtable, Constants
 	globals
 		// Maximum TickPerSecond is 8192, timers can't ticks more often than this value
 		constant integer TickPerSecond = 64
 		constant real TickerPeriod = 1. / I2R(TickPerSecond)
+		private trigger trig
+		private triggeraction array TickerExecuteQueue
+		private integer count
+		private integer tick
 	endglobals
 	
-	struct Ticker
-		private real duration
-		private real interval
-		private method create takes real duration, real interval returns thistype
-			local thistype this = thistype.allocate()
-			set this.duration = duration
-			set this.interval = interval
-			return this
-		endmethod
-	endstruct
+	private function Refresh takes nothing returns nothing
+		local integer i = 0
+		call TriggerClearActions(trig)
+		loop
+			exitwhen i >= count
+			call TriggerAddAction(trig, TickerExecuteQueue[i])
+			set i = i + 1
+		endloop
+	endfunction
 	
 	private function TickerActions takes nothing returns nothing
+		set tick = tick + 1
+		call TriggerExecute(trig)
+		// Decrement triggeraction tick value (should also depend on period ...)
+		call Refresh()
+	endfunction
+	
+	function EndTicker takes triggeraction TA returns nothing
+		call HTFlushChildHashtable(TA)
+		call DestroyTriggeraction(TA)
+	endfunction
+	
+	function Ticker takes real period, integer ticks, code funcname returns triggeraction
+		set TickerExecuteQueue[count] = TriggerAddAction(trig, funcname)
+		call HTSaveInteger(TickerExecuteQueue[count], TICKER_COUNT, count)
+		call HTSaveInteger(TickerExecuteQueue[count], TICKER_PERIOD, period)
+		call HTSaveInteger(TickerExecuteQueue[count], TICKER_TICK, ticks)
+		set count = count + 1
 	endfunction
 	
 	private function init takes nothing returns nothing
+		set trig = CreateTrigger()
+		set count = 0
+		set tick = 0
 		call TimerStart(CreateTimer(), TickerPeriod, true, TickerActions)
 	endfunction
 endlibrary
+
+
+
+
+
+
+
+
+
+
 
 module T32xs
         private thistype next
@@ -239,16 +272,4 @@ library T32 initializer OnInit
             call TriggerAddCondition(Trig,Condition(function thistype.PeriodicLoop))
         endmethod
     endmodule
-    
-    //==============================================================================
-    // System Core.
-    //
-    private function OnExpire takes nothing returns nothing
-        set Tick=Tick+1
-        call TriggerEvaluate(Trig)
-    endfunction
-    
-    private function OnInit takes nothing returns nothing
-        call TimerStart(CreateTimer(),PERIOD,true,function OnExpire)
-    endfunction
 endlibrary
