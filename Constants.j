@@ -1,5 +1,8 @@
 library Constants initializer init
 	globals
+		// Some vars
+		group NoPathingGroup
+		
 		// Buffer variables
 		unit buffer_UNIT
 		group buffer_GROUP
@@ -13,63 +16,49 @@ library Constants initializer init
 		
 		// Hashtable constants
 		constant integer BOOLEAN = 0
-		constant integer INTEGER = 1
-		constant integer REAL = 2
-		constant integer STRING = 3
-		constant integer HANDLE = 4
-		constant integer WIDGET = 5
-		constant integer ITEM = 6
-		constant integer UNIT = 7
-		constant integer GROUP = 8
-		constant integer PLAYER = 9
-		constant integer FORCE = 10
-		constant integer EFFECT = 11
-		constant integer DESTRUCTABLE = 12
-		constant integer LOCATION = 13
-		constant integer TIMER = 14
-		constant integer TRIGGER = 15
-		constant integer TRIGGERACTION = 16
-		constant integer TRIGGERCONDITION = 17
-		constant integer EVENT = 18
-		constant integer TEXTTAG = 19
-		constant integer LIGHTNING = 20
-		constant integer HASHTABLE = 21
-		constant integer ABILITY = 22
-		constant integer DIALOG = 23
-		constant integer BUTTON = 24
-		constant integer INDEX = 25
-		constant integer BOOLEAN1 = 26
-		constant integer INTEGER1 = 27
-		constant integer INTEGER2 = 28
-		constant integer INTEGER3 = 29
-		constant integer INTERVAL = 30
-		constant integer REAL1 = 32
-		constant integer REAL2 = 33
-		constant integer REAL3 = 34
-		constant integer CASTER = 37
-		constant integer TARGET = 38
-		constant integer DUMMY = 39-60
-		constant integer GROUP1 = 70
-		constant integer GROUP2 = 71
-		constant integer GROUP3 = 72
-		constant integer BUTTON1 = 80
-		constant integer BUTTON2 = 81
-		constant integer BUTTON3 = 82
-		constant integer BUTTON4 = 83
-		constant integer BUTTON5 = 84
-		constant integer TICKER_POSITION = 120
-		constant integer TICKER_TICK = 121
-		constant integer TICKER_PERIOD = 122
-		constant integer DAMAGE_SYSTEM = 175
-		constant integer DAMAGE_CASTER = 180
-		constant integer DAMAGE_EVENT = 190
-		constant integer ENDCHANNEL = 195
-		constant integer ENDCHANNELSTOP = 196
-		constant integer INCUBATION = 250
-		constant integer AIGROUP = 295
-		constant integer AIPATROL = 299
-		constant integer AIPATROLCURRENT = 300
-		constant integer AIPATROLHASH = 301 // use 301-350 range
+		constant integer INTEGER = 20
+		constant integer REAL = 40
+		constant integer STRING = 60
+		constant integer HANDLE = 80
+		constant integer WIDGET = 100
+		constant integer ITEM = 120
+		constant integer UNIT = 140
+		constant integer GROUP = 160
+		constant integer PLAYER = 180
+		constant integer FORCE = 200
+		constant integer EFFECT = 220
+		constant integer DESTRUCTABLE = 240
+		constant integer LOCATION = 260
+		constant integer TIMER = 280
+		constant integer TRIGGER = 300
+		constant integer TRIGGERACTION = 320
+		constant integer TRIGGERCONDITION = 340
+		constant integer EVENT = 360
+		constant integer TEXTTAG = 380
+		constant integer LIGHTNING = 400
+		constant integer HASHTABLE = 420
+		constant integer ABILITY = 440
+		constant integer DIALOG = 460
+		constant integer BUTTON = 480
+		constant integer INDEX = 500
+		constant integer INTERVAL = 501
+		constant integer DISTANCE = 502
+		constant integer DURATION = 503
+		constant integer CASTER = 504
+		constant integer TARGET = 505
+		constant integer TICKER_POSITION = 1000
+		constant integer TICKER_TICK = 1001
+		constant integer TICKER_PERIOD = 1002
+		constant integer DAMAGE_SYSTEM = 1100
+		constant integer DAMAGE_CASTER = 1101
+		constant integer DAMAGE_EVENT = 1102
+		constant integer ENDCHANNEL = 1200
+		constant integer ENDCHANNELSTOP = 1201
+		constant integer AIGROUP = 1300
+		constant integer AIPATROL = 1301
+		constant integer AIPATROLCURRENT = 1302
+		constant integer AIPATROLHASH = 1349 // use 1349 - 1400 range
+		constant integer INCUBATION = 1500
 		
 		// Orders constants
 		constant integer SMART = 851971

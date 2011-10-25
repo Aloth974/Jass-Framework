@@ -178,7 +178,18 @@ library Unit initializer init needs Constants, Maths, RecycleGroups
 		set buffer_REAL = delta
 		call ForGroup(g, function GroupRemoveUnitsInRangeOfXYEnum)
 	endfunction
-
+	
+	function GroupKeepUnitsOfTypeEnum takes nothing returns nothing
+		if GetUnitTypeId(GetEnumUnit()) != buffer_INTEGER then
+			call GroupRemoveUnit(buffer_GROUP, GetEnumUnit())
+		endif
+	endfunction
+	function GroupKeepUnitsOfType takes group g, integer id returns nothing
+		set buffer_GROUP = g
+		set buffer_INTEGER = id
+		call ForGroup(g, function GroupKeepUnitsOfTypeEnum)
+	endfunction
+	
 	function GroupKeepHeroesEnum takes nothing returns nothing
 		if IsUnitType(GetEnumUnit(), UNIT_TYPE_HERO) == false then
 			call GroupRemoveUnit(buffer_GROUP, GetEnumUnit())

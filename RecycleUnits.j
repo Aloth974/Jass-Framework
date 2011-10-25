@@ -63,7 +63,7 @@ library RecycleUnits initializer init needs Hashtable, Constants, RecycleTimers
 	endfunction
 	
 	function DeleteUnitEnd takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		call DeleteUnit__real(HTLoadUnitHandle(t, UNIT))
 		call DeleteTimer(t)
 	endfunction
