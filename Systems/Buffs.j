@@ -24,11 +24,11 @@ library Buffs initializer init needs RecycleTimers, Hashtable
 	endfunction
 	
 	function GetEventBuffId takes nothing returns integer
-		return HTLoadInteger(GetTriggeringTrigger(), INTEGER1)
+		return HTLoadInteger(GetTriggeringTrigger(), INTEGER + 1)
 	endfunction
 	
 	function GetEventBuffLevel takes nothing returns integer
-		return HTLoadInteger(GetTriggeringTrigger(), INTEGER2)
+		return HTLoadInteger(GetTriggeringTrigger(), INTEGER + 2)
 	endfunction
 	
 	private function onEvent takes unit caster, unit target, integer abilid, integer buffid, integer level, integer whichEvent returns nothing
@@ -51,8 +51,8 @@ library Buffs initializer init needs RecycleTimers, Hashtable
 					call HTSaveUnitHandle(t, CASTER, caster)
 					call HTSaveUnitHandle(t, TARGET, target)
 					call HTSaveInteger(t, INTEGER, abilid)
-					call HTSaveInteger(t, INTEGER1, buffid)
-					call HTSaveInteger(t, INTEGER2, level)
+					call HTSaveInteger(t, INTEGER + 1, buffid)
+					call HTSaveInteger(t, INTEGER + 2, level)
 					if TriggerEvaluate(t) then
 						call TriggerExecute(t)
 					endif
@@ -96,10 +96,10 @@ library Buffs initializer init needs RecycleTimers, Hashtable
 		local unit target = HTLoadUnitHandle(t, TARGET)
 		local integer i = HTLoadInteger(t, INDEX)
 		local integer abilid = HTLoadInteger(t, INTEGER)
-		local integer buffid = HTLoadInteger(t, INTEGER1)
-		local integer stack = HTLoadInteger(t, INTEGER2)
+		local integer buffid = HTLoadInteger(t, INTEGER + 1)
+		local integer stack = HTLoadInteger(t, INTEGER + 2)
 		local integer abilvl = GetUnitAbilityLevel(target, abilid)
-		local boolean stackable = HTLoadBoolean(t, BOOLEAN)
+		
 		if GetWidgetLife(target) <= 0. then
 			call onEvent(caster, target, abilid, buffid, abilvl, BuffEvent1)
 			set i = 0
@@ -109,7 +109,7 @@ library Buffs initializer init needs RecycleTimers, Hashtable
 		endif
 		if i <= 0 then
 			call onEvent(caster, target, abilid, buffid, abilvl, BuffEvent3)
-			if stackable and abilvl - stack > 0 then
+			if abilvl - stack > 0 then
 				call SetUnitAbilityLevel(target, abilid, abilvl - stack)
 			else
 				call UnitRemoveAbility(target, abilid)
@@ -124,29 +124,22 @@ library Buffs initializer init needs RecycleTimers, Hashtable
 		set caster = null
 	endfunction
 
-	function AddBuffTimed takes unit caster, unit target, real duration, integer abilid, integer buffid, boolean stackable, integer stack returns nothing
+	function AddBuffTimed takes unit caster, unit target, real duration, integer abilid, integer buffid, integer stack returns nothing
 		local timer t = NewTimer()
 		local integer abilvl = GetUnitAbilityLevel(target, abilid)
-		if abilvl > 0 then
-			if stackable then
-				call SetUnitAbilityLevel(target, abilid, abilvl + stack)
-			else
-				call UnitRemoveAbility(target, abilid)
-				call UnitAddAbility(target, abilid)
-			endif
-		else
-			call UnitAddAbility(target, abilid)
-			if stackable then
-				call SetUnitAbilityLevel(target, abilid, stack)
-			endif
+		if stack <= 0 then
+			set stack = 1
 		endif
+		if abilvl <= 0 then
+			call UnitAddAbility(target, abilid)
+		endif
+		call SetUnitAbilityLevel(target, abilid, abilvl + stack)
 		call HTSaveUnitHandle(t, CASTER, caster)
 		call HTSaveUnitHandle(t, TARGET, target)
 		call HTSaveInteger(t, INDEX, 10 * R2I(duration))
 		call HTSaveInteger(t, INTEGER, abilid)
-		call HTSaveInteger(t, INTEGER1, buffid)
-		call HTSaveInteger(t, INTEGER2, stack)
-		call HTSaveBoolean(t, BOOLEAN, stackable)
+		call HTSaveInteger(t, INTEGER + 1, buffid)
+		call HTSaveInteger(t, INTEGER + 2, stack)
 		call TimerStart(t, 0.1, false, function AddBuffTimedTick)
 	endfunction
 	

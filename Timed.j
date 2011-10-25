@@ -1,4 +1,4 @@
-library Timed initializer init needs Hashtable, RecycleTimers, Maths
+library Timed initializer init needs Constants, Hashtable, RecycleTimers, Maths
 // Lightnings codes :
 //Chain Lightning Primary - "CLPB" / Secondary - "CLSB"
 //Drain - "DRAB"
@@ -8,12 +8,8 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 //Lightning Attack - "CHIM" / Magic Leash - "LEAS"
 //Mana Burn - "MBUR" / Mana Flare - "MFPB"
 //Spirit Link - "SPLK"
-	globals
-		group NoPathingGroup
-	endglobals
-	
 	function ExecuteFuncTimedEnd takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		call ExecuteFunc(HTLoadStr(t, STRING))
 		call DeleteTimer(t)
 	endfunction
@@ -31,7 +27,7 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 	endfunction
 	
 	function AddUnitUserDataTimedEnd takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		local unit u = HTLoadUnitHandle(t, UNIT)
 		call SetUnitUserData(u, GetUnitUserData(u) - HTLoadInteger(t, INTEGER))
 		set u = null
@@ -49,7 +45,7 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 	endfunction
 	
 	function CreateDestructableTimedEnd takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		local destructable d = HTLoadDestructableHandle(t, DESTRUCTABLE)
 		call KillDestructable(d)
 		call RemoveDestructable(d)
@@ -66,7 +62,7 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 	endfunction
 	
 	function CreateEffectXYTimedEnd takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		call DestroyEffect(HTLoadEffectHandle(t, EFFECT))
 		call DeleteTimer(t)
 	endfunction
@@ -84,7 +80,7 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 	endfunction
 
 	function CreateEffectTimedEnd takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		local integer i = HTLoadInteger(t, INDEX)
 		local real duration = HTLoadReal(t, REAL)
 		if GetWidgetLife(HTLoadUnitHandle(t, UNIT)) <= 0. then
@@ -120,7 +116,7 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 	endfunction
 
 	function CreateLightningBetweenUnitsTimedTick takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		local unit caster = HTLoadUnitHandle(t, CASTER)
 		local unit target = HTLoadUnitHandle(t, TARGET)
 		local lightning l = HTLoadLightningHandle(t, LIGHTNING)
@@ -158,7 +154,7 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 	endfunction
 	
 	function NoPathingTimedTick takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		local unit u = HTLoadUnitHandle(t, UNIT)
 		local integer i = HTLoadInteger(t, INDEX)
 		local real duration = HTLoadReal(t, REAL)
@@ -192,15 +188,13 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 	endfunction
 
 	function SlideUnitTick takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		local unit u = HTLoadUnitHandle(t, UNIT) 
 		local integer i = HTLoadInteger(t, INDEX)
-		local real duration = HTLoadReal(t, REAL)
-		local real dist = HTLoadReal(t, REAL1)
-		local real angle = HTLoadReal(t, REAL2)
-		local real xc = GetUnitX(u)
-		local real yc = GetUnitY(u)
-		local boolean moveSpeed = HTLoadBoolean(t, BOOLEAN1)
+		local real duration = HTLoadReal(t, DURATION)
+		local real dist = HTLoadReal(t, DISTANCE)
+		local real angle = HTLoadReal(t, REAL)
+		local boolean moveSpeed = HTLoadBoolean(t, BOOLEAN + 1)
 		if i <= 0 then
 			call DeleteTimer(t)
 		else
@@ -213,30 +207,13 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 			
 			if not moveSpeed then
 				if HTLoadBoolean(t, BOOLEAN) then
-					if GetUnitDefaultMoveSpeed(u) > 0. then
-						if IsUnitInGroup(u, NoPathingGroup) == true then
-							call SetUnitX(u, PolarX(xc, dist * 0.05, angle))
-							call SetUnitY(u, PolarY(yc, dist * 0.05, angle))
-						else
-							call SetUnitXY(u, PolarX(xc, dist * 0.05, angle), PolarY(yc, dist * 0.05, angle))
-						endif
-					else
-						call SetUnitPosition(u, PolarX(xc, dist * 0.05, angle), PolarY(yc, dist * 0.05, angle))
-					endif
+					set dist = dist * 0.05
 				else
 					set dist = dist * Pow(0.89, (21. - I2R(i + 1))) - dist * Pow(0.89, (21. - I2R(i)))
-					if GetUnitDefaultMoveSpeed(u) > 0. then
-						if IsUnitInGroup(u, NoPathingGroup) == true then
-							call SetUnitX(u, PolarX(xc, dist, angle))
-							call SetUnitY(u, PolarY(yc, dist, angle))
-						else
-							call SetUnitXY(u, PolarX(xc, dist, angle), PolarY(yc, dist, angle))
-						endif
-					else
-						call SetUnitPosition(u, PolarX(xc, dist, angle), PolarY(yc, dist, angle))
-					endif
 				endif
+				call MoveUnit(u, PolarX(GetUnitX(u), dist, angle), PolarY(GetUnitY(u), dist, angle))
 			endif
+			
 			call HTSaveInteger(t, INDEX, i - 1)
 			call TimerStart(t, duration * 0.05, false, function SlideUnitTick)
 		endif
@@ -252,22 +229,22 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 				set t = NewTimer()
 				call HTSaveUnitHandle(t, UNIT, u)
 				call HTSaveBoolean(t, BOOLEAN, linear)
-				call HTSaveBoolean(t, BOOLEAN1, takeCareOfMoveSpeed)
+				call HTSaveBoolean(t, BOOLEAN + 1, takeCareOfMoveSpeed)
 				call HTSaveInteger(t, INDEX, 20)
-				call HTSaveReal(t, REAL, duration)
-				call HTSaveReal(t, REAL1, dist)
-				call HTSaveReal(t, REAL2, angle)
+				call HTSaveReal(t, DURATION, duration)
+				call HTSaveReal(t, DISTANCE, dist)
+				call HTSaveReal(t, REAL, angle)
 				call TimerStart(t, duration * 0.05, false, function SlideUnitTick)
 			endif
 		endif
 	endfunction
 
 	function ChangeHeightOverTimeTick takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		local unit u = HTLoadUnitHandle(t, UNIT)
 		local integer i = HTLoadInteger(t, INDEX)
 		local real height = HTLoadReal(t, REAL)
-		local real duration = HTLoadReal(t, REAL1)
+		local real duration = HTLoadReal(t, DURATION)
 		if GetWidgetLife(u) <= 0. then
 			set i = -5
 		endif
@@ -295,14 +272,14 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 				call HTSaveInteger(t, INDEX, 5)
 				call HTSaveUnitHandle(t, UNIT, u)
 				call HTSaveReal(t, REAL, height)
-				call HTSaveReal(t, REAL1, duration)
+				call HTSaveReal(t, DURATION, duration)
 				call TimerStart(t, duration * 0.1, false, function ChangeHeightOverTimeTick)
 			endif
 		endif
 	endfunction
 
 	function AddAbilityTimedTick takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		local integer i = HTLoadInteger(t, INDEX)
 		local integer abilid = HTLoadInteger(t, INTEGER)
 		local unit u = HTLoadUnitHandle(t, UNIT)
@@ -354,12 +331,12 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 	endfunction
 
 	function DamageOverTimeTick takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		local unit caster = HTLoadUnitHandle(t, CASTER)
 		local unit target = HTLoadUnitHandle(t, TARGET)
 		local damagetype dmgtype = ConvertDamageType(HTLoadInteger(t, INTEGER))
 		local real damage = HTLoadReal(t, REAL)
-		local real tickinterval = HTLoadReal(t, REAL1)
+		local real tickinterval = HTLoadReal(t, REAL + 1)
 		local integer i = HTLoadInteger(t, INDEX)
 		if GetWidgetLife(target) <= 0. then
 			set i = 0
@@ -385,21 +362,21 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 				call HTSaveInteger(t, INDEX, tickcount)
 				call HTSaveInteger(t, INTEGER, dmgtype)
 				call HTSaveReal(t, REAL, tickdamage)
-				call HTSaveReal(t, REAL1, tickinterval)
+				call HTSaveReal(t, REAL + 1, tickinterval)
 				call TimerStart(t, tickinterval, false, function DamageOverTimeTick)
 			endif
 		endif
 	endfunction
 
 	function DamageOverTimeMatchingBuffTick takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local timer t = GetTimer()
 		local unit caster = HTLoadUnitHandle(t, CASTER)
 		local unit target = HTLoadUnitHandle(t, TARGET)
 		local damagetype dmgtype = ConvertDamageType(HTLoadInteger(t, INTEGER))
 		local real damage = HTLoadReal(t, REAL)
-		local real tickinterval =  HTLoadReal(t, REAL1)
+		local real tickinterval =  HTLoadReal(t, REAL + 1)
 		local integer i = HTLoadInteger(t, INDEX)
-		local integer buffid = HTLoadInteger(t, INTEGER2)
+		local integer buffid = HTLoadInteger(t, INTEGER + 2)
 		if GetUnitAbilityLevel(target, buffid) <= 0 then
 			set i = 0
 		endif
@@ -424,8 +401,8 @@ library Timed initializer init needs Hashtable, RecycleTimers, Maths
 				call HTSaveInteger(t, INDEX, tickcount)
 				call HTSaveInteger(t, INTEGER, dmgtype)
 				call HTSaveReal(t, REAL, tickdamage)
-				call HTSaveReal(t, REAL1, tickinterval)
-				call HTSaveInteger(t, INTEGER2, buffid)
+				call HTSaveReal(t, REAL + 1, tickinterval)
+				call HTSaveInteger(t, INTEGER + 2, buffid)
 				call TimerStart(t, tickinterval, false, function DamageOverTimeMatchingBuffTick)
 			endif
 		endif

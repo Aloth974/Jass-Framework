@@ -89,7 +89,7 @@ library Maths initializer init needs Constants
 		endif
 	endfunction
 	
-	function SetUnitXY takes unit u, real x, real y returns nothing
+	function SetUnitXY takes unit u, real x, real y returns boolean
 		local real xt = 0.
 		local real yt = 0.
 		if u != null then
@@ -106,6 +106,21 @@ library Maths initializer init needs Constants
 			call SetUnitX(u, xt)
 			call SetUnitY(u, yt)
 		endif
+		return GetUnitX(u) == x and GetUnitY(u) == y
+	endfunction
+	
+	function MoveUnit takes unit u, real x, real y returns boolean
+		if GetUnitDefaultMoveSpeed(u) > 0. then
+			if IsUnitInGroup(u, NoPathingGroup) then
+				call SetUnitX(u, x)
+				call SetUnitY(u, y)
+			else
+				call SetUnitXY(u, x, y)
+			endif
+		else
+			call SetUnitPosition(u, x, y)
+		endif
+		return GetUnitX(u) == x and GetUnitY(u) == y
 	endfunction
 	
 	function GetUnitMissingLife takes unit u returns real
