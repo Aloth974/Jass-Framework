@@ -115,7 +115,7 @@ library Utilities initializer init needs Constants
 		call SetUnitState(u, UNIT_STATE_MANA, r)
 		return d
 	endfunction
-	
+
 	private function init takes nothing returns nothing
 		set PlayerColor[0] = COLOR_RED
 		set PlayerColor[1] = COLOR_BLUE

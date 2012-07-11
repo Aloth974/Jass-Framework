@@ -1,17 +1,62 @@
-library Unit initializer init needs Constants, Maths, RecycleGroups
+library Unit initializer init needs Constants, Hashtable, Maths, RecycleGroups
 	globals
 		boolexpr FTRUE
 		boolexpr FAlive
+		boolean UNIT_KILLING
+		boolean UNIT_REMOVING
 	endglobals
 	
+	function IsUnitAlive takes unit u returns boolean
+		local boolean ret = false
+		if u != null then
+			set ret = GetWidgetLife(u) >= 0.405
+		endif
+		return ret
+	endfunction
+
+	function IsUnitDead takes unit u returns boolean
+		return not IsUnitAlive(u)
+	endfunction
+
+	function IsUnitUnderPercentLife takes unit u, real percent returns boolean
+		local boolean ret = false
+		if percent < 1.0 and percent > 0. then
+			set ret = GetWidgetLife(u) < GetUnitState(u, UNIT_STATE_MAX_LIFE) * percent
+		endif
+		return ret
+	endfunction
+
+	function IsUnitUnderPercentMana takes unit u, real percent returns boolean
+		local boolean ret = false
+		if percent < 1.0 and percent > 0. then
+			set ret = GetUnitState(u, UNIT_STATE_MANA) < GetUnitState(u, UNIT_STATE_MAX_MANA) * percent
+		endif
+		return ret
+	endfunction
+
 	function TRUEFilt takes nothing returns boolean
 		return true
 	endfunction
 	
 	function AliveFilt takes nothing returns boolean
-		return GetWidgetLife(GetFilterUnit()) > 0.
+		return IsUnitAlive(GetFilterUnit())
 	endfunction
-	
+
+	function DeleteUnit takes unit u returns nothing
+		if u != null then
+			call ShowUnit(u, false)
+			if IsUnitAlive(u) then
+				set UNIT_KILLING = true
+				call KillUnit(u)
+				set UNIT_KILLING = false
+			endif
+			call HTFlushChildHashtable(u)
+			set UNIT_REMOVING = true
+			call RemoveUnit(u)
+			set UNIT_REMOVING = false
+		endif
+	endfunction
+
 	function StopTarget takes unit u returns nothing
 		call IssueImmediateOrderById(u, STOP)
 		call SetUnitPosition(u, GetUnitX(u), GetUnitY(u))
@@ -291,5 +336,7 @@ library Unit initializer init needs Constants, Maths, RecycleGroups
 	private function init takes nothing returns nothing
 		set FTRUE = Filter(function TRUEFilt)
 		set FAlive = Filter(function AliveFilt)
+		set UNIT_KILLING = false
+		set UNIT_REMOVING = false
 	endfunction
 endlibrary
