@@ -1,4 +1,4 @@
-library Timed initializer init needs Constants, Hashtable, RecycleTimers, Maths
+library Timed initializer init needs Constants, Hashtable, RecycleTimers, Maths, Utilities, Unit
 // Lightnings codes :
 //Chain Lightning Primary - "CLPB" / Secondary - "CLSB"
 //Drain - "DRAB"
@@ -8,6 +8,26 @@ library Timed initializer init needs Constants, Hashtable, RecycleTimers, Maths
 //Lightning Attack - "CHIM" / Magic Leash - "LEAS"
 //Mana Burn - "MBUR" / Mana Flare - "MFPB"
 //Spirit Link - "SPLK"
+
+	function UnitSetTimedLifeTick takes nothing returns nothing
+		local timer t = GetTimer()
+		local integer i = HTLoadInteger(t, INTEGER)
+		local unit u = HTLoadUnitHandle(t, UNIT)
+		if i <= 0 or IsUnitDead(u) then
+			call DeleteUnit(u)
+			call DeleteTimer(t)
+		else
+			call HTSaveInteger(t, INTEGER, i - 1)
+		endif
+	endfunction
+
+	function UnitSetTimedLife takes unit u, real time returns nothing
+		local timer t = NewTimer()
+		call HTSaveInteger(t, INTEGER, R2I(time/0.1))
+		call HTSaveUnitHandle(t, UNIT, u)
+		call TimerStart(t, 0.1, true, function UnitSetTimedLifeTick)
+	endfunction
+
 	function ExecuteFuncTimedEnd takes nothing returns nothing
 		local timer t = GetTimer()
 		call ExecuteFunc(HTLoadStr(t, STRING))
