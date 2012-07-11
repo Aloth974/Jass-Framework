@@ -18,14 +18,14 @@ library Timed initializer init needs Constants, Hashtable, RecycleTimers, Maths,
 			call DeleteTimer(t)
 		else
 			call HTSaveInteger(t, INTEGER, i - 1)
+			call TimerStart(t, 0.1, false, function UnitSetTimedLifeTick)
 		endif
 	endfunction
-
 	function UnitSetTimedLife takes unit u, real time returns nothing
 		local timer t = NewTimer()
 		call HTSaveInteger(t, INTEGER, R2I(time/0.1))
 		call HTSaveUnitHandle(t, UNIT, u)
-		call TimerStart(t, 0.1, true, function UnitSetTimedLifeTick)
+		call TimerStart(t, 0.1, false, function UnitSetTimedLifeTick)
 	endfunction
 
 	function ExecuteFuncTimedEnd takes nothing returns nothing
