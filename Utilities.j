@@ -7,6 +7,15 @@ library Utilities initializer init needs Constants
 		string array PlayerColor[15]
 	endglobals
 	
+	function IsNight takes nothing returns boolean
+		local real time = GetFloatGameState(GAME_STATE_TIME_OF_DAY)
+		return time <= 6. and time > 18.
+	endfunction
+
+	function IsDay takes nothing returns boolean
+		return not IsNight()
+	endfunction
+
 	function CombatText takes string s, real size, unit u, real r, real g, real b, real ang1, real ang2 returns nothing
 		local texttag t = null
 		local real angle = 0.
