@@ -1,4 +1,4 @@
-library Conditions initializer init needs Maths, Unit
+library Conditions initializer init needs Unit
 	globals
 		boolexpr FIsHero
 	endglobals

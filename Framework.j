@@ -90,7 +90,7 @@
 // DisplayUnit() -> nothing
 
 // * * * * * * * * * *
-// * Unit
+// * Unit (needs Maths, RecycleGroup)
 // * * * * * * * * * *
 // DeleteUnit(unit u) -> nothing
 // StopTarget(unit u) -> nothing
@@ -132,7 +132,7 @@
 // IsUnitUnderPercentMana(unit u, real percent) -> boolean
 
 // * * * * * * * * * *
-// * Conditions (needs Maths, Unit)
+// * Conditions (needs Unit)
 // * * * * * * * * * *
 // IsComputer() -> boolean
 // IsHero() -> boolean
@@ -161,7 +161,7 @@
 // UnitHasItemOfType(unit u, integer itemid) -> boolean
 
 // * * * * * * * * * *
-// * Timed
+// * Timed (needs RecycleTimers, Utilities, Unit)
 // * * * * * * * * * *
 // AddAbilityTimed(unit u, real dur, integer abilid) -> nothing
 // AddUnitUserDataTimed(unit u, integer i, real dur) -> nothing
@@ -178,7 +178,7 @@
 // UnitSetTimedLife(unit u, real time -> nothing
 
 // * * * * * * * * * *
-// * Trigger
+// * Trigger (needs RecycleTimers)
 // * * * * * * * * * *
 // StopWhenChannelEnd(unit u, timer t, boolexpr filter) -> nothing
 // TriggerRegisterAnyUnitDamaged(trigger trig) -> nothing
