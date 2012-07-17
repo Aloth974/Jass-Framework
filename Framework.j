@@ -28,7 +28,7 @@
 // HTFlushParentHashtable() -> nothing
 
 // * * * * * * * * * *
-// * Maths
+// * Maths (needs Constants)
 // * * * * * * * * * *
 // CheckX(real x) -> real
 // CheckY(real y) -> real
@@ -46,34 +46,15 @@
 // SetUnitZ(unit u, real z) -> nothing
 // GetUnitMissingLife(unit u) -> real
 // GetNearestItemInRange(real x, real y, real range) -> item
+// IsAngleBetweenAngles(real angle, real middleAngle, real range) -> boolean
+// IsPointInCone(real centerX, real centerY, real x, real y, real facingAngle, real range) -> boolean	
+// GetAngleDifference(real a1, real a2, boolean absolute) -> real
 
 // * * * * * * * * * *
-// * RecycleTimers
+// * Utilities (needs Constants)
 // * * * * * * * * * *
-// CleanTimer(timer t) -> timer
-// NewTimer() -> timer
-// DeleteTimer(timer t) -> nothing
-// DisplayTimer() -> nothing
-
-// * * * * * * * * * *
-// * RecycleGroups
-// * * * * * * * * * *
-// CleanGroup(group g) -> group
-// NewGroup() -> group
-// DeleteGroup(group g) -> nothing
-// DisplayGroup() -> nothing
-
-// * * * * * * * * * *
-// * RecycleUnits
-// * * * * * * * * * *
-// CleanUnit(unit u) -> unit
-// NewUnit() -> unit
-// DeleteUnit(unit u, real delay) -> nothing
-// DisplayUnit() -> nothing
-
-// * * * * * * * * * *
-// * Utilities
-// * * * * * * * * * *
+// IsNight() -> boolean
+// IsDay() -> boolean
 // CombatText(string s, real size, unit u, real r, real g, real b, real angMin, real angMax) -> nothing
 // DisplayTextToAll(real duration, string text) -> nothing
 // DisplayTextToOne(player p, real duration, string text) -> nothing
@@ -85,8 +66,33 @@
 // ModifyMana(unit u, real delta) -> real
 
 // * * * * * * * * * *
+// * RecycleTimers (needs Hashtable)
+// * * * * * * * * * *
+// CleanTimer(timer t) -> timer
+// NewTimer() -> timer
+// DeleteTimer(timer t) -> nothing
+// DisplayTimer() -> nothing
+
+// * * * * * * * * * *
+// * RecycleGroups (needs Hashtable)
+// * * * * * * * * * *
+// CleanGroup(group g) -> group
+// NewGroup() -> group
+// DeleteGroup(group g) -> nothing
+// DisplayGroup() -> nothing
+
+// * * * * * * * * * *
+// * RecycleUnits (NOT USED)
+// * * * * * * * * * *
+// CleanUnit(unit u) -> unit
+// NewUnit() -> unit
+// DeleteUnit(unit u, real delay) -> nothing
+// DisplayUnit() -> nothing
+
+// * * * * * * * * * *
 // * Unit
 // * * * * * * * * * *
+// DeleteUnit(unit u) -> nothing
 // StopTarget(unit u) -> nothing
 // ResetAbilityCooldown(unit u, integer abilid) -> nothing
 // GetUnitsInRange(real x, real y, real range, integer count) -> group
@@ -120,9 +126,13 @@
 // GroupRemoveUnitsInRangeOfXY(group g, real x, real y, real range) -> nothing
 // GroupRemoveUnitsOfPlayer(group g, player p) -> nothing
 // GroupRemoveUnitsOfType(group g, integer id) -> nothing
+// IsUnitAlive(unit u) -> boolean
+// IsUnitDead(unit u) -> boolean
+// IsUnitUnderPercentLife(unit u, real percent) -> boolean
+// IsUnitUnderPercentMana(unit u, real percent) -> boolean
 
 // * * * * * * * * * *
-// * Conditions
+// * Conditions (needs Maths, Unit)
 // * * * * * * * * * *
 // IsComputer() -> boolean
 // IsHero() -> boolean
@@ -162,8 +172,10 @@
 // CreateLightningBetweenUnitsTimed(unit caster, unit target, string codeName, real dur) -> lightning
 // DamageOverTime(unit caster, unit target, real tickdmg, real tickinterval, integer tickcount, integer dmgtype) -> void
 // DamageOverTimeMatchingBuff(unit caster, unit target, real tickdmg, real tickinterval, integer tickcount, integer dmgtype, integer buffid) -> void
-// ExecuteFuncTimed(string s, real dur) -> nothing//      NoPathingTimed(unit u, real dur) -> nothing
+// ExecuteFuncTimed(string s, real dur) -> nothing
+// NoPathingTimed(unit u, real dur) -> nothing
 // SlideUnit(unit u, real dist, real angle, real duration, boolean linear, boolean takeCareOfMoveSpeed) -> nothing
+// UnitSetTimedLife(unit u, real time -> nothing
 
 // * * * * * * * * * *
 // * Trigger
