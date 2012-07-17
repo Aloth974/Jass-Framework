@@ -1,4 +1,4 @@
-library Unit initializer init needs Constants, Hashtable, Maths, RecycleGroups
+library Unit initializer init needs Maths, RecycleGroups
 	globals
 		boolexpr FTRUE
 		boolexpr FAlive

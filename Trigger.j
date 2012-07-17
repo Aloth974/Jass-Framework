@@ -1,4 +1,4 @@
-library Trigger initializer init needs RecycleTimers, Hashtable
+library Trigger initializer init needs RecycleTimers
 	globals
 		trigger DamageUnitEvent_RegisterUnitTrigger
 		trigger DamageUnitEvent_UnRegisterUnitTrigger
