@@ -11,7 +11,7 @@ library Maths initializer init needs Constants
 		rect ENUMRECT
 		boolexpr GetNearestItemInRangeFilt = null
 	endglobals
-
+	
 	function GetRandomX takes nothing returns real
 		return GetRandomReal(MAP_MIN_X, MAP_MAX_X)
 	endfunction
@@ -148,6 +148,41 @@ library Maths initializer init needs Constants
 		set buffer_Y = y
 		call EnumItemsInRect(ENUMRECT, GetNearestItemInRangeFilt, function DoNothing)
 		return buffer_ITEM
+	endfunction
+	
+	function IsAngleBetweenAngles takes real angle, real middleAngle, real range returns boolean
+		return Cos(ModuloReal(angle - middleAngle + 360, 360) * bj_DEGTORAD) > Cos(range * bj_DEGTORAD)
+	endfunction
+	
+	function IsPointInCone takes real centerX, real centerY, real x, real y, real facingAngle, real range returns boolean
+		return IsAngleBetweenAngles(AngleBetweenXY(centerX, centerY, x, y), facingAngle, range)
+	endfunction
+
+	//! textmacro Modulo takes VAR, PA, PB
+	set $VAR$ = ($PA$) - I2R(R2I(($PA$)/($PB$))) * ($PB$)
+	if $VAR$ < 0 then
+		set $VAR$ = ($VAR$) + ($PB$)
+	endif
+	//! endtextmacro
+	
+	function GetAngleDifference takes real a1, real a2, boolean absolute returns real
+		local real x
+		//! runtextmacro Modulo("a1","a1","bj_PI*2")
+		//! runtextmacro Modulo("a2","a2","bj_PI*2")
+		if a1 > a2 then
+			set x = a1
+			set a1 = a2
+			set a2 = x
+		endif
+		set x = a2 - bj_PI * 2
+		if a2 - a1 > a1 - x then
+			set a2 = x
+		endif
+		set x = a1 - a2
+		if x < 0 and absolute then
+			set x = -x
+		endif
+		return x
 	endfunction
 
 	private function init takes nothing returns nothing

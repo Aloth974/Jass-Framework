@@ -1,4 +1,4 @@
-library Conditions initializer init needs Constants, Maths, Unit
+library Conditions initializer init needs Maths, Unit
 	globals
 		boolexpr FIsHero
 	endglobals
@@ -42,6 +42,11 @@ library Conditions initializer init needs Constants, Maths, Unit
 	endfunction
 	
 	function IsUnitBehindTarget takes unit caster, unit target returns boolean
+		return IsPointInCone(GetUnitX(target), GetUnitY(target), GetUnitX(caster), GetUnitY(caster), GetUnitFacing(target) + 180., 65.)
+	endfunction
+	
+	// Deprecated, will be deleted
+	function IsUnitBehindTargetOld takes unit caster, unit target returns boolean
 		local real casterFacing = GetUnitFacing(caster)
 		local real targetFacing = GetUnitFacing(target)
 		local real casterSin = Sin(casterFacing * bj_DEGTORAD)
