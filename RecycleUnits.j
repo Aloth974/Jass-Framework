@@ -2,7 +2,7 @@
 // constant integer UnitMax = <Number of units you want>
 // constant integer RecyclableUnitId = <Id of dummy unit>
 
-library RecycleUnits initializer init needs Hashtable, Constants, RecycleTimers
+library RecycleUnits initializer init needs Hashtable, Constants, RecycleTimers, Debug
 	globals
 		integer UnitCount
 		integer UnitMin
@@ -26,15 +26,15 @@ library RecycleUnits initializer init needs Hashtable, Constants, RecycleTimers
 	
 	function NewUnit takes player owner, real x, real y returns unit
 		if UnitCount <= 0 then
-			call BJDebugMsg("|cFFF00000Warning: Unit pool empty. Creating a new one.")
+			call DebugMsg("|cFFF00000Warning: Unit pool empty. Creating a new one.")
 			set UnitPool[0] = CreateRecyclableUnit()
 		else
 			set UnitCount = UnitCount - 1
 			if UnitCount <= UnitMax / 20 then
-				call BJDebugMsg("|cFFF00000Warning: Unit pool nearly empty.")
+				call DebugMsg("|cFFF00000Warning: Unit pool nearly empty.")
 			endif
 			if UnitPool[UnitCount] == null then
-				call BJDebugMsg("|cFFF00000Warning: Null Unit found. Creating a new one instead.")
+				call DebugMsg("|cFFF00000Warning: Null Unit found. Creating a new one instead.")
 				set UnitPool[UnitCount] = CreateRecyclableUnit()
 			endif
 		endif
@@ -55,7 +55,7 @@ library RecycleUnits initializer init needs Hashtable, Constants, RecycleTimers
 				set UnitPool[UnitCount] = u
 				set UnitCount = UnitCount + 1
 			else
-				call BJDebugMsg("|cFFF00000Warning: Unit pool is full. Destroying the Unit.")
+				call DebugMsg("|cFFF00000Warning: Unit pool is full. Destroying the Unit.")
 				call KillUnit(u)
 				call RemoveUnit(u)
 			endif
@@ -79,7 +79,7 @@ library RecycleUnits initializer init needs Hashtable, Constants, RecycleTimers
 	endfunction
 	
 	function DisplayUnit takes nothing returns nothing
-		call BJDebugMsg("Unités utilisées : " + I2S(UnitMax - UnitMin) + " / " + I2S(UnitMax))
+		call DebugMsg("Unités utilisées : " + I2S(UnitMax - UnitMin) + " / " + I2S(UnitMax))
 	endfunction
 	
 	private function init takes nothing returns nothing

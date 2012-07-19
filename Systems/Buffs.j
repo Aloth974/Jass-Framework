@@ -1,4 +1,4 @@
-library Buffs initializer init needs RecycleTimers, Hashtable
+library Buffs initializer init needs Hashtable, Ticker
 	globals
 		constant integer BuffEvent1 = 1
 		constant integer BuffEvent2 = 2
@@ -91,10 +91,10 @@ library Buffs initializer init needs RecycleTimers, Hashtable
 	endfunction
 	
 	function AddBuffTimedTick takes nothing returns nothing
-		local timer t = GetExpiredTimer()
+		local integer index = GetTickerIndex()
+		local handle t = GetTickerDataHandler(index)
 		local unit caster = HTLoadUnitHandle(t, CASTER)
 		local unit target = HTLoadUnitHandle(t, TARGET)
-		local integer i = HTLoadInteger(t, INDEX)
 		local integer abilid = HTLoadInteger(t, INTEGER)
 		local integer buffid = HTLoadInteger(t, INTEGER + 1)
 		local integer stack = HTLoadInteger(t, INTEGER + 2)
@@ -102,12 +102,12 @@ library Buffs initializer init needs RecycleTimers, Hashtable
 		
 		if GetWidgetLife(target) <= 0. then
 			call onEvent(caster, target, abilid, buffid, abilvl, BuffEvent1)
-			set i = 0
+			call StopTicker(index)
 		elseif GetUnitAbilityLevel(target, abilid) <= 0 then
 			call onEvent(caster, target, abilid, buffid, abilvl, BuffEvent2)
-			set i = 0
+			call StopTicker(index)
 		endif
-		if i <= 0 then
+		if IsTickerExpired(index) then
 			call onEvent(caster, target, abilid, buffid, abilvl, BuffEvent3)
 			if abilvl - stack > 0 then
 				call SetUnitAbilityLevel(target, abilid, abilvl - stack)
@@ -115,18 +115,15 @@ library Buffs initializer init needs RecycleTimers, Hashtable
 				call UnitRemoveAbility(target, abilid)
 				call UnitRemoveAbility(target, buffid)
 			endif
-			call CleanTimer(t)
-		else
-			call HTSaveInteger(t, INDEX, i - 1)
-			call TimerStart(t, 0.1, false, function AddBuffTimedTick)
 		endif
 		set target = null
 		set caster = null
 	endfunction
 
 	function AddBuffTimed takes unit caster, unit target, real duration, integer abilid, integer buffid, integer stack returns nothing
-		local timer t = NewTimer()
+		local integer index = Ticker(0.1, 10 * R2I(duration), function AddBuffTimedTick)
 		local integer abilvl = GetUnitAbilityLevel(target, abilid)
+		local handle t = GetTickerDataHandler(index)
 		if stack <= 0 then
 			set stack = 1
 		endif
@@ -136,11 +133,11 @@ library Buffs initializer init needs RecycleTimers, Hashtable
 		call SetUnitAbilityLevel(target, abilid, abilvl + stack)
 		call HTSaveUnitHandle(t, CASTER, caster)
 		call HTSaveUnitHandle(t, TARGET, target)
-		call HTSaveInteger(t, INDEX, 10 * R2I(duration))
 		call HTSaveInteger(t, INTEGER, abilid)
 		call HTSaveInteger(t, INTEGER + 1, buffid)
 		call HTSaveInteger(t, INTEGER + 2, stack)
-		call TimerStart(t, 0.1, false, function AddBuffTimedTick)
+		call TickerStart(index)
+		set t = null
 	endfunction
 	
 	private function init takes nothing returns nothing

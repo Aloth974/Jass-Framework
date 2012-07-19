@@ -66,7 +66,7 @@
 // ModifyMana(unit u, real delta) -> real
 
 // * * * * * * * * * *
-// * RecycleTimers (needs Hashtable)
+// * RecycleTimers (needs Hashtable, Debug)
 // * * * * * * * * * *
 // CleanTimer(timer t) -> timer
 // NewTimer() -> timer
@@ -74,7 +74,7 @@
 // DisplayTimer() -> nothing
 
 // * * * * * * * * * *
-// * RecycleGroups (needs Hashtable)
+// * RecycleGroups (needs Hashtable, Debug)
 // * * * * * * * * * *
 // CleanGroup(group g) -> group
 // NewGroup() -> group
@@ -195,6 +195,7 @@
 // GetTickerPeriod(integer index) -> real
 // AddTickerTick(integer index, integer count) -> nothing
 // SetTickerPeriod(integer index, real newPeriod) -> boolean
+// IsTickerExpired(integer index) -> boolean
 
 // * * * * * * * * * *
 // * AIGroup
@@ -212,6 +213,7 @@
 //      Functions
 //! import "X:\home\olivier\Documents\Developpement\Jass\Framework\Constants.j"
 //! import "X:\home\olivier\Documents\Developpement\Jass\Framework\Hashtable.j"
+//! import "X:\home\olivier\Documents\Developpement\Jass\Framework\Debug.j"
 //! import "X:\home\olivier\Documents\Developpement\Jass\Framework\RecycleTimers.j"
 //! import "X:\home\olivier\Documents\Developpement\Jass\Framework\RecycleGroups.j"
 // import "X:\home\olivier\Documents\Developpement\Jass\Framework\RecycleUnits.j"

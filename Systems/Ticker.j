@@ -2,10 +2,14 @@ library Ticker initializer init needs Hashtable, Constants
 	globals
 		// Maximum TickPerSecond is 8192, timers can't ticks more often than this value
 		constant integer TickPerSecond = 32
+		constant boolean TICKER_STOPPED = false
+		constant boolean TICKER_STARTED = true
+
 		private trigger array TickerTrigger
 		private integer array TickerTickNext
 		private integer array TickerTickLeft
 		private real array TickerTickPeriod
+		private boolean array TickerStatus
 		private integer count
 		private integer tick
 		private boolean lock
@@ -18,7 +22,7 @@ library Ticker initializer init needs Hashtable, Constants
 		set TickerTickPeriod[index] = newPeriod
 		return true
 	endfunction
-	
+
 	function GetTickerIndex takes nothing returns integer
 		return HTLoadInteger(GetTriggeringTrigger(), TICKER_INDEX)
 	endfunction
@@ -39,13 +43,18 @@ library Ticker initializer init needs Hashtable, Constants
 		return TickerTrigger[index]
 	endfunction
 	
+	function IsTickerExpired takes integer index returns boolean
+		return not TickerStatus[index]
+	endfunction
+
+	function StopTicker takes integer index returns nothing
+		set TickerStatus[index] = TICKER_STOPPED
+		set TickerTickNext[index] = 0
+		set TickerTickNext[index] = tick + 1
+	endfunction
+
 	private function GetNextTick takes real period returns integer
 		return tick + R2I(period * I2R(TickPerSecond))
-	endfunction
-	
-	function StopTicker takes integer index returns nothing
-		set TickerTickLeft[index] = 0
-		set TickerTickNext[index] = tick + 1
 	endfunction
 
 	function Ticker takes real period, integer ticks, code func returns integer
@@ -64,6 +73,7 @@ library Ticker initializer init needs Hashtable, Constants
 		set TickerTickLeft[count] = ticks
 		set TickerTickPeriod[count] = period
 		set TickerTickNext[count] = -1
+		set TickerStatus[count] = TICKER_STOPPED
 		call HTSaveInteger(TickerTrigger[count], TICKER_INDEX, count)
 		call HTSaveTriggerActionHandle(TickerTrigger[count], TICKER_ACTION, TriggerAddAction(TickerTrigger[count], func))
 		
@@ -73,6 +83,7 @@ library Ticker initializer init needs Hashtable, Constants
 	
 	function TickerStart takes integer index returns nothing
 		set TickerTickNext[index] = GetNextTick(TickerTickPeriod[index])
+		set TickerStatus[index] = TICKER_STARTED
 	endfunction
 
 	private function TickerActions takes nothing returns nothing
@@ -107,6 +118,9 @@ library Ticker initializer init needs Hashtable, Constants
 						set TickerTickLeft[count] = -1
 						set TickerTickPeriod[count] = 0.
 					else
+						if TickerTickLeft[i] == 0 then
+							set TickerStatus[i] = TICKER_STOPPED
+						endif
 						set TickerTickNext[i] = GetNextTick(TickerTickPeriod[i])
 						call TriggerExecute(TickerTrigger[i])
 					endif
