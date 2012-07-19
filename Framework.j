@@ -212,3 +212,4 @@
 // import "X:\home\olivier\Documents\Developpement\Jass\Framework\AIGroup.j"
 // import "X:\home\olivier\Documents\Developpement\Jass\Framework\AIPatrol.j"
 //! import "X:\home\olivier\Documents\Developpement\Jass\Framework\Systems\Buffs.j"
+//! import "X:\home\olivier\Documents\Developpement\Jass\Framework\Systems\Ticker.j"
