@@ -184,6 +184,19 @@
 // TriggerRegisterAnyUnitDamaged(trigger trig) -> nothing
 
 // * * * * * * * * * *
+// * Ticker (needs Hashtable, Constants)
+// * * * * * * * * * *
+// Ticker(real period, integer ticks, code callback) -> integer
+// GetTickerIndex() -> integer
+// TickerStart(integer index) -> nothing
+// StopTicker(integer index) -> nothing
+// GetTickerDataHandler(integer index) -> handle
+// GetTickerTickLeft(integer index) -> integer
+// GetTickerPeriod(integer index) -> real
+// AddTickerTick(integer index, integer count) -> nothing
+// SetTickerPeriod(integer index, real newPeriod) -> boolean
+
+// * * * * * * * * * *
 // * AIGroup
 // * * * * * * * * * *
 // AIGroup <name> = AIGroup.create()
