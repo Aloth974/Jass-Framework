@@ -1,7 +1,7 @@
 // You have to define this constants :
 // constant integer TimerMax = <Number of timers you want>
 
-library RecycleTimers initializer init needs Hashtable
+library RecycleTimers initializer init needs Hashtable, Debug
 	globals
 		integer TimerCount
 		integer TimerMin
@@ -24,15 +24,15 @@ library RecycleTimers initializer init needs Hashtable
 	
 	function NewTimer takes nothing returns timer
 		if TimerCount <= 0 then
-			call BJDebugMsg("|cFFF00000Warning: Timer pool empty. Creating a new one.")
+			call DebugMsg("|cFFF00000Warning: Timer pool empty. Creating a new one.")
 			set TimerPool[0] = CreateTimer()
 		else
 			set TimerCount = TimerCount - 1
 			if TimerCount <= TimerMax / 20 then
-				call BJDebugMsg("|cFFF00000Warning: Timer pool nearly empty.")
+				call DebugMsg("|cFFF00000Warning: Timer pool nearly empty.")
 			endif
 			if TimerPool[TimerCount] == null then
-				call BJDebugMsg("|cFFF00000Warning: Null timer found. Creating a new one instead.")
+				call DebugMsg("|cFFF00000Warning: Null timer found. Creating a new one instead.")
 				set TimerPool[TimerCount] = CreateTimer()
 			endif
 		endif
@@ -49,14 +49,14 @@ library RecycleTimers initializer init needs Hashtable
 				set TimerPool[TimerCount] = t
 				set TimerCount = TimerCount + 1
 			else
-				call BJDebugMsg("|cFFF00000Warning: Timer pool is full. Destroying the timer.")
+				call DebugMsg("|cFFF00000Warning: Timer pool is full. Destroying the timer.")
 				call DestroyTimer(t)
 			endif
 		endif
 	endfunction
 	
 	function DisplayTimer takes nothing returns nothing
-		call BJDebugMsg("Compteurs utilisés : " + I2S(TimerMax - TimerMin) + " / " + I2S(TimerMax))
+		call DebugMsg("Compteurs utilisés : " + I2S(TimerMax - TimerMin) + " / " + I2S(TimerMax))
 	endfunction
 	
 	private function init takes nothing returns nothing

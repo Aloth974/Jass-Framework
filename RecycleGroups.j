@@ -1,7 +1,7 @@
 // You have to define this constants :
 // constant integer GroupMax = <Number of groups you want>
 
-library RecycleGroups initializer init needs Hashtable
+library RecycleGroups initializer init needs Hashtable, Debug
 	globals
 		integer GroupCount
 		integer GroupMin
@@ -18,15 +18,15 @@ library RecycleGroups initializer init needs Hashtable
 	
 	function NewGroup takes nothing returns group
 		if GroupCount <= 0 then
-			call BJDebugMsg("|cFFF00000Warning: Group pool empty. Creating a new one.")
+			call DebugMsg("|cFFF00000Warning: Group pool empty. Creating a new one.")
 			set GroupPool[0] = CreateGroup()
 		else
 			set GroupCount = GroupCount - 1
 			if GroupCount <= GroupMax / 20 then
-				call BJDebugMsg("|cFFF00000Warning: Group pool nearly empty.")
+				call DebugMsg("|cFFF00000Warning: Group pool nearly empty.")
 			endif
 			if GroupPool[GroupCount] == null then
-				call BJDebugMsg("|cFFF00000Warning: Null Group found. Creating a new one instead.")
+				call DebugMsg("|cFFF00000Warning: Null Group found. Creating a new one instead.")
 				set GroupPool[GroupCount] = CreateGroup()
 			endif
 		endif
@@ -43,14 +43,14 @@ library RecycleGroups initializer init needs Hashtable
 				set GroupPool[GroupCount] = g
 				set GroupCount = GroupCount + 1
 			else
-				call BJDebugMsg("|cFFF00000Warning: Group pool is full. Destroying the Group.")
+				call DebugMsg("|cFFF00000Warning: Group pool is full. Destroying the Group.")
 				call DestroyGroup(g)
 			endif
 		endif
 	endfunction
 	
 	function DisplayGroup takes nothing returns nothing
-		call BJDebugMsg("Groupes utilisés : " + I2S(GroupMax - GroupMin) + " / " + I2S(GroupMax))
+		call DebugMsg("Groupes utilisés : " + I2S(GroupMax - GroupMin) + " / " + I2S(GroupMax))
 	endfunction
 	
 	private function init takes nothing returns nothing

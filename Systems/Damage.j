@@ -9,7 +9,7 @@
 // * So we can disable critical system on target before each spell damage ? And but again, if a DoT tick between the time your unit attack and the target actually take the damage ? Your attack won't benefit from critical system.
 // * * * * *
 
-library Damage needs Hashtable, RecycleTimers initializer init
+library Damage needs Hashtable, Ticker initializer init
 	globals
 		constant real DAMAGE_TRIGGER_TIMEOUT = 5
 		private trigger AttackTrigger
