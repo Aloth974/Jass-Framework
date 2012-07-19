@@ -46,9 +46,8 @@ library Constants initializer init
 		constant integer DURATION = 503
 		constant integer CASTER = 504
 		constant integer TARGET = 505
-		constant integer TICKER_POSITION = 1000
-		constant integer TICKER_TICK = 1001
-		constant integer TICKER_PERIOD = 1002
+		constant integer TICKER_INDEX = 1003
+		constant integer TICKER_ACTION = 1004
 		constant integer DAMAGE_SYSTEM = 1100
 		constant integer DAMAGE_CASTER = 1101
 		constant integer DAMAGE_EVENT = 1102

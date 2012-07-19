@@ -1,19 +1,16 @@
-// Okay it works ... but you cannot pass any data to your tick function ...
-
-library Ticker initializer init
+library Ticker initializer init needs Hashtable, Constants
 	globals
 		// Maximum TickPerSecond is 8192, timers can't ticks more often than this value
 		constant integer TickPerSecond = 32
-		private handle array TickerDataHandler
-		private string array TickerExecute
+		private trigger array TickerTrigger
 		private integer array TickerTickNext
 		private integer array TickerTickLeft
 		private real array TickerTickPeriod
 		private integer count
 		private integer tick
-		private integer last_index
+		private boolean lock
 	endglobals
-	
+
 	function SetTickerPeriod takes integer index, real newPeriod returns boolean
 		if newPeriod <= -1. then
 			return false
@@ -23,7 +20,7 @@ library Ticker initializer init
 	endfunction
 	
 	function GetTickerIndex takes nothing returns integer
-		return last_index
+		return HTLoadInteger(GetTriggeringTrigger(), TICKER_INDEX)
 	endfunction
 	
 	function AddTickerTick takes integer index, integer count returns nothing
@@ -34,32 +31,26 @@ library Ticker initializer init
 		return TickerTickLeft[index]
 	endfunction
 	
-	function GetTickerTimeLeft takes integer index returns real
-		return I2R(TickerTickLeft[index]) * TickerTickPeriod[index]
+	function GetTickerPeriod takes integer index returns real
+		return TickerTickPeriod[index]
 	endfunction
 	
 	function GetTickerDataHandler takes integer index returns handle
-		return TickerDataHandler[index]
+		return TickerTrigger[index]
 	endfunction
 	
 	private function GetNextTick takes real period returns integer
 		return tick + R2I(period * I2R(TickPerSecond))
 	endfunction
 	
-	function EndTicker takes integer number returns nothing
-		set TickerExecute[number] = TickerExecute[count]
-		set TickerTickNext[number] = TickerTickNext[count]
-		set TickerTickLeft[number] = TickerTickLeft[count]
-		set TickerTickPeriod[number] = TickerTickPeriod[count]
-		set TickerExecute[count] = null
-		set TickerTickNext[count] = -1
-		set TickerTickLeft[count] = -1
-		set TickerTickPeriod[count] = 0.
-		call HTFlushChildHashtable(TickerDataHandler[count])
-		set count = count - 1
+	function StopTicker takes integer index returns nothing
+		set TickerTickLeft[index] = 0
+		set TickerTickNext[index] = tick + 1
 	endfunction
-	
-	function Ticker takes real period, integer ticks, string funcname returns integer
+
+	function Ticker takes real period, integer ticks, code func returns integer
+		local integer index = count
+
 		if period <= 0. then
 			return -1
 		endif
@@ -69,17 +60,19 @@ library Ticker initializer init
 			return -1
 		endif
 		
-		set TickerExecute[count] = funcname
-		set TickerTickNext[count] = GetNextTick(period)
+		set TickerTrigger[count] = CreateTrigger()
 		set TickerTickLeft[count] = ticks
 		set TickerTickPeriod[count] = period
-		
-		if TickerDataHandler[count] == null then
-			set TickerDataHandler[count] = Location(0., 0.)
-		endif
+		set TickerTickNext[count] = -1
+		call HTSaveInteger(TickerTrigger[count], TICKER_INDEX, count)
+		call HTSaveTriggerActionHandle(TickerTrigger[count], TICKER_ACTION, TriggerAddAction(TickerTrigger[count], func))
 		
 		set count = count + 1
-		return count - 1
+		return index
+	endfunction
+	
+	function TickerStart takes integer index returns nothing
+		set TickerTickNext[index] = GetNextTick(TickerTickPeriod[index])
 	endfunction
 
 	private function TickerActions takes nothing returns nothing
@@ -88,23 +81,41 @@ library Ticker initializer init
 		
 		loop
 			exitwhen i >= count
-			if TickerTickNext[i] <= tick then
-				if TickerTickLeft[i] <= 1 then
-					call EndTicker(i)
-				else
-					set TickerTickLeft[i] = TickerTickLeft[i] - 1
-					set TickerTickNext[i] = GetNextTick(TickerTickPeriod[i])
-				endif
 
-				if TickerExecute[i] != null then
-					set last_index = i
-					call ExecuteFunc(TickerExecute[i])
+			if TickerTickNext[i] > -1 then
+				if TickerTickNext[i] <= tick then
+					set TickerTickLeft[i] = TickerTickLeft[i] - 1
+					
+					if TickerTickLeft[i] < 0 then
+						call TriggerRemoveAction(TickerTrigger[i], HTLoadTriggerActionHandle(TickerTrigger[i], TICKER_ACTION))
+						call HTFlushChildHashtable(TickerTrigger[i])
+						call DestroyTrigger(TickerTrigger[i])
+
+						set count = count - 1
+						if i < count then
+							set TickerTrigger[i] = TickerTrigger[count]
+							set TickerTickNext[i] = TickerTickNext[count]
+							set TickerTickLeft[i] = TickerTickLeft[count]
+							set TickerTickPeriod[i] = TickerTickPeriod[count]
+							call HTSaveInteger(TickerTrigger[count], TICKER_INDEX, i)
+						endif
+
+						set i = i - 1
+
+						set TickerTrigger[count] = null
+						set TickerTickNext[count] = -1
+						set TickerTickLeft[count] = -1
+						set TickerTickPeriod[count] = 0.
+					else
+						set TickerTickNext[i] = GetNextTick(TickerTickPeriod[i])
+						call TriggerExecute(TickerTrigger[i])
+					endif
 				endif
 			endif
 			set i = i + 1
 		endloop
 	endfunction
-	
+
 	private function init takes nothing returns nothing
 		set count = 0
 		set tick = 0
