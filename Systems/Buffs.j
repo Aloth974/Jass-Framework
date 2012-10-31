@@ -1,4 +1,4 @@
-library Buffs initializer init needs Hashtable, Ticker
+library Buffs initializer init needs Hashtable, Ticker, Unit
 	globals
 		constant integer BuffEvent1 = 1
 		constant integer BuffEvent2 = 2
@@ -91,8 +91,8 @@ library Buffs initializer init needs Hashtable, Ticker
 	endfunction
 	
 	function AddBuffTimedTick takes nothing returns nothing
-		local integer index = GetTickerIndex()
-		local handle t = GetTickerDataHandler(index)
+		local Tick tick = GetTicker()
+		local handle t = tick.getHandle()
 		local unit caster = HTLoadUnitHandle(t, CASTER)
 		local unit target = HTLoadUnitHandle(t, TARGET)
 		local integer abilid = HTLoadInteger(t, INTEGER)
@@ -100,14 +100,14 @@ library Buffs initializer init needs Hashtable, Ticker
 		local integer stack = HTLoadInteger(t, INTEGER + 2)
 		local integer abilvl = GetUnitAbilityLevel(target, abilid)
 		
-		if GetWidgetLife(target) <= 0. then
+		if IsUnitDead(target) then
 			call onEvent(caster, target, abilid, buffid, abilvl, BuffEvent1)
-			call StopTicker(index)
+			call tick.stop()
 		elseif GetUnitAbilityLevel(target, abilid) <= 0 then
 			call onEvent(caster, target, abilid, buffid, abilvl, BuffEvent2)
-			call StopTicker(index)
+			call tick.stop()
 		endif
-		if IsTickerExpired(index) then
+		if tick.isExpired() then
 			call onEvent(caster, target, abilid, buffid, abilvl, BuffEvent3)
 			if abilvl - stack > 0 then
 				call SetUnitAbilityLevel(target, abilid, abilvl - stack)
@@ -118,12 +118,13 @@ library Buffs initializer init needs Hashtable, Ticker
 		endif
 		set target = null
 		set caster = null
+		set t = null
 	endfunction
 
 	function AddBuffTimed takes unit caster, unit target, real duration, integer abilid, integer buffid, integer stack returns nothing
-		local integer index = Ticker(0.1, 10 * R2I(duration), function AddBuffTimedTick)
+		local Tick tick = Tick.create(0.1, 10 * R2I(duration), function AddBuffTimedTick, false)
 		local integer abilvl = GetUnitAbilityLevel(target, abilid)
-		local handle t = GetTickerDataHandler(index)
+		local handle t = tick.getHandle()
 		if stack <= 0 then
 			set stack = 1
 		endif
@@ -136,7 +137,7 @@ library Buffs initializer init needs Hashtable, Ticker
 		call HTSaveInteger(t, INTEGER, abilid)
 		call HTSaveInteger(t, INTEGER + 1, buffid)
 		call HTSaveInteger(t, INTEGER + 2, stack)
-		call TickerStart(index)
+		call tick.start()
 		set t = null
 	endfunction
 	
