@@ -1,90 +1,153 @@
+//
+//	HOW TO USE
+//
+// Instanciate your ticker : local tick = Tick.create(real interval, integer iteration, code callback, boolean startNow)
+//	> interval in how often your callback will be called
+//	> iteration is how many times your callback will be called
+//	> callback is the argumentless function which will be called at every tick
+//	> startNow define if Ticks begins juste after instanciation or will start when you will order it
+//
+// DO NOT USE ATTRIBUTES
+//
+// Methods are :
+//	- tick.start() : start your tick, calling "callback" at every "interval" for "iteration" many times
+//	- tick.stop() : stop your ticker
+//	- tick.isExpired() : returns true or false, depending if the ticker is still ticking
+//	- local handle t = tick.getHandle() : returns handle associated to this ticker, allowing to attach data to it
+//	- tick.getRemaining() : return the number of remaining ticks
+//	- tick.reset() : reset the duration of the ticker
+//	- tick.setPeriodFactor() : set a period factor. Setting 0,5 will make ticks spawn in half the time they were intended
+//	- tick.getPeriodFactor() : retrieve the period factor
+//	- tick.resetPeriodFactor() : reset the period factor to the default value 1
+//
+// Functions are :
+//	- local Tick tick = GetTicker() : returns the expiring ticker in the callback method
+
+// Issues : using tick.left = x cause inconsistent data with tick.last
+
 library Ticker initializer init needs Hashtable, Constants
+
 	globals
 		// Maximum TickPerSecond is 8192, timers can't ticks more often than this value
-		constant integer TickPerSecond = 32
-		constant boolean TICKER_STOPPED = false
-		constant boolean TICKER_STARTED = true
-
-		private trigger array TickerTrigger
-		private integer array TickerTickNext
-		private integer array TickerTickLeft
-		private real array TickerTickPeriod
-		private boolean array TickerStatus
+		constant integer TickPerSecond = 1024
+		private Tick array Ticks
 		private integer count
 		private integer tick
-		private boolean lock
 	endglobals
-
-	function SetTickerPeriod takes integer index, real newPeriod returns boolean
-		if newPeriod <= -1. then
-			return false
-		endif
-		set TickerTickPeriod[index] = newPeriod
-		return true
-	endfunction
-
-	function GetTickerIndex takes nothing returns integer
-		return HTLoadInteger(GetTriggeringTrigger(), TICKER_INDEX)
-	endfunction
-	
-	function AddTickerTick takes integer index, integer count returns nothing
-		set TickerTickLeft[index] = TickerTickLeft[index] + count
-	endfunction
-	
-	function GetTickerTickLeft takes integer index returns integer
-		return TickerTickLeft[index]
-	endfunction
-	
-	function GetTickerPeriod takes integer index returns real
-		return TickerTickPeriod[index]
-	endfunction
-	
-	function GetTickerDataHandler takes integer index returns handle
-		return TickerTrigger[index]
-	endfunction
-	
-	function IsTickerExpired takes integer index returns boolean
-		return not TickerStatus[index]
-	endfunction
-
-	function StopTicker takes integer index returns nothing
-		set TickerStatus[index] = TICKER_STOPPED
-		set TickerTickNext[index] = 0
-		set TickerTickNext[index] = tick + 1
-	endfunction
 
 	private function GetNextTick takes real period returns integer
 		return tick + R2I(period * I2R(TickPerSecond))
 	endfunction
 
-	function Ticker takes real period, integer ticks, code func returns integer
-		local integer index = count
+	function GetTicker takes nothing returns Tick
+		return Ticks[HTLoadInteger(GetTriggeringTrigger(), TICKER_INDEX)]
+	endfunction
 
-		if period <= 0. then
-			return -1
-		endif
-		
-		if count + 1 > 8191 then
-			call BJDebugMsg("|cFFF00000Error: Ticker pool full. Aborting.")
-			return -1
-		endif
-		
-		set TickerTrigger[count] = CreateTrigger()
-		set TickerTickLeft[count] = ticks
-		set TickerTickPeriod[count] = period
-		set TickerTickNext[count] = -1
-		set TickerStatus[count] = TICKER_STOPPED
-		call HTSaveInteger(TickerTrigger[count], TICKER_INDEX, count)
-		call HTSaveTriggerActionHandle(TickerTrigger[count], TICKER_ACTION, TriggerAddAction(TickerTrigger[count], func))
-		
-		set count = count + 1
-		return index
-	endfunction
-	
-	function TickerStart takes integer index returns nothing
-		set TickerTickNext[index] = GetNextTick(TickerTickPeriod[index])
-		set TickerStatus[index] = TICKER_STARTED
-	endfunction
+	struct Tick
+		// Cannot be changed
+		private trigger trig
+		private triggeraction action
+		private real period
+
+		integer last
+		integer next
+		integer done
+		integer left
+		real periodFactor
+
+		// public
+		method getHandle takes nothing returns handle
+			return .trig
+		endmethod
+
+		// Remaining ticks
+		method getRemaining takes nothing returns integer
+			return .left
+		endmethod
+		method reset takes nothing returns nothing
+			set .left = .left + .done
+			set .done = 0
+		endmethod
+
+		// Last tick
+		method setLast takes integer i returns nothing
+			call .setLastTick(i)
+		endmethod
+		method setLastTick takes integer i returns nothing
+			set .last = i
+		endmethod
+		method getLastTick takes nothing returns integer
+			return .last
+		endmethod
+
+		// Period factors
+		method setPeriodFactor takes real factor returns nothing
+			set .periodFactor = factor
+		endmethod
+		method getPeriodFactor takes nothing returns real
+			return .periodFactor
+		endmethod
+		method resetPeriodFactor takes nothing returns nothing
+			call .setPeriodFactor(1.)
+		endmethod
+
+		method isExpired takes nothing returns boolean
+			return .left <= .last
+		endmethod
+
+		method start takes nothing returns nothing
+			if .next < 0 then
+				call .nextTick()
+			endif
+		endmethod
+
+		method stop takes nothing returns nothing
+			set .left = .last
+		endmethod
+
+		// private
+		method getIndex takes nothing returns integer
+			return HTLoadInteger(.trig, TICKER_INDEX)
+		endmethod
+		method setIndex takes integer i returns nothing
+			call HTSaveInteger(.trig, TICKER_INDEX, i)
+		endmethod
+		method nextTick takes nothing returns nothing
+			set .next = GetNextTick(.period * .periodFactor)
+		endmethod
+
+		static method create takes real period, integer ticks, code func, boolean autostart returns Tick
+			local Tick this = Tick.allocate()
+			set .trig = CreateTrigger()
+			set .action = TriggerAddAction(.trig, func)
+			set .period = period
+
+			set .last = 0
+			set .next = -1
+			set .done = 0
+			set .left = ticks
+			set .periodFactor = 1.
+
+			call .setIndex(count)
+			set Ticks[count] = this
+			set count = count + 1
+			if autostart then
+				call .start()
+			endif
+			return this
+		endmethod
+
+		method exec takes nothing returns nothing
+			call TriggerExecute(.trig)
+		endmethod
+
+		method delete takes nothing returns nothing
+			call HTFlushChildHashtable(.trig)
+			call TriggerRemoveAction(.trig, .action)
+			call DestroyTrigger(.trig)
+			call .destroy()
+		endmethod
+	endstruct
 
 	private function TickerActions takes nothing returns nothing
 		local integer i = 0
@@ -93,36 +156,24 @@ library Ticker initializer init needs Hashtable, Constants
 		loop
 			exitwhen i >= count
 
-			if TickerTickNext[i] > -1 then
-				if TickerTickNext[i] <= tick then
-					set TickerTickLeft[i] = TickerTickLeft[i] - 1
+			if Ticks[i].next > -1 then
+				if Ticks[i].next <= tick then
+					set Ticks[i].left = Ticks[i].left - 1
+					set Ticks[i].done = Ticks[i].done + 1
 					
-					if TickerTickLeft[i] < 0 then
-						call TriggerRemoveAction(TickerTrigger[i], HTLoadTriggerActionHandle(TickerTrigger[i], TICKER_ACTION))
-						call HTFlushChildHashtable(TickerTrigger[i])
-						call DestroyTrigger(TickerTrigger[i])
+					if Ticks[i].left < Ticks[i].last then
+						call Ticks[i].delete()
 
 						set count = count - 1
 						if i < count then
-							set TickerTrigger[i] = TickerTrigger[count]
-							set TickerTickNext[i] = TickerTickNext[count]
-							set TickerTickLeft[i] = TickerTickLeft[count]
-							set TickerTickPeriod[i] = TickerTickPeriod[count]
-							call HTSaveInteger(TickerTrigger[count], TICKER_INDEX, i)
+							set Ticks[i] = Ticks[count]
+							call Ticks[i].setIndex(i)
 						endif
 
 						set i = i - 1
-
-						set TickerTrigger[count] = null
-						set TickerTickNext[count] = -1
-						set TickerTickLeft[count] = -1
-						set TickerTickPeriod[count] = 0.
 					else
-						if TickerTickLeft[i] == 0 then
-							set TickerStatus[i] = TICKER_STOPPED
-						endif
-						set TickerTickNext[i] = GetNextTick(TickerTickPeriod[i])
-						call TriggerExecute(TickerTrigger[i])
+						call Ticks[i].nextTick()
+						call Ticks[i].exec()
 					endif
 				endif
 			endif

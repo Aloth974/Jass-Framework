@@ -1,4 +1,4 @@
-library Trigger initializer init needs Hashtable, RecycleGroups
+library Trigger initializer init needs Hashtable, RecycleGroups, Ticker
 	globals
 		trigger DamageUnitEvent_RegisterUnitTrigger
 		trigger DamageUnitEvent_UnRegisterUnitTrigger
@@ -80,11 +80,12 @@ library Trigger initializer init needs Hashtable, RecycleGroups
 	endfunction
 
 	function AStopWhenChannelEnd takes nothing returns nothing
-		local unit u = GetTriggerUnit()
-		local timer t = HTLoadTimerHandle(u, ENDCHANNEL)
 		local trigger trig = GetTriggeringTrigger()
-		if(HTLoadInteger(t, INDEX) > 0) then
-			call HTSaveInteger(t, INDEX, 0)
+		local unit u = GetTriggerUnit()
+		local Tick tick = HTLoadInteger(u, ENDCHANNEL)
+		if not tick.isExpired() then
+			call tick.stop()
+			call tick.exec()
 		endif
 		call TriggerRemoveAction(trig, HTLoadTriggerActionHandle(trig, TRIGGERACTION))
 		call TriggerRemoveCondition(trig, HTLoadTriggerConditionHandle(trig, TRIGGERCONDITION))
@@ -95,9 +96,9 @@ library Trigger initializer init needs Hashtable, RecycleGroups
 		set u = null
 	endfunction
 	
-	function StopWhenChannelEnd takes unit u, timer t, boolexpr filter returns nothing
+	function StopWhenChannelEnd takes unit u, Tick tick, boolexpr filter returns nothing
 		local trigger trig = CreateTrigger()
-		call HTSaveTimerHandle(u, ENDCHANNEL, t)
+		call HTSaveInteger(u, ENDCHANNEL, tick)
 		call HTSaveTriggerActionHandle(trig, TRIGGERACTION, TriggerAddAction(trig, function AStopWhenChannelEnd))
 		call HTSaveTriggerConditionHandle(trig, TRIGGERCONDITION, TriggerAddCondition(trig, filter))
 		call TriggerRegisterUnitEvent(trig, u, EVENT_UNIT_SPELL_ENDCAST)
