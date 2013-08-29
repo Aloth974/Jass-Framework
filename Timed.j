@@ -21,9 +21,11 @@ library Timed initializer init needs Ticker, Utilities, Unit
 		set u = null
 	endfunction
 	function UnitSetTimedLife takes unit u, real time returns nothing
-		local Tick t = Tick.create(0.1, R2I(time/0.1), function UnitSetTimedLifeTick, false)
-		call HTSaveUnitHandle(t.getHandle(), UNIT, u)
-		call t.start()
+		//local timer t = NewTimer()
+		//call HTSaveInteger(t, INTEGER, R2I(time/0.1))
+		//call HTSaveUnitHandle(t, UNIT, u)
+		//call TimerStart(t, 0.1, false, function UnitSetTimedLifeTick)
+		call UnitApplyTimedLife(u, 'BTLF', time)
 	endfunction
 
 	function ExecuteFuncTimedEnd takes nothing returns nothing
@@ -112,7 +114,7 @@ library Timed initializer init needs Ticker, Utilities, Unit
 				if duration <= 0. then
 					call DestroyEffect(e)
 				else
-					set tick = Tick.create(duration * 0.1, 1, function CreateEffectTimedEnd, false)
+					set tick = Tick.create(duration * 0.1, 10, function CreateEffectTimedEnd, false)
 					call HTSaveEffectHandle(tick.getHandle(), EFFECT, e)
 					call HTSaveUnitHandle(tick.getHandle(), UNIT, u)
 					call HTSaveReal(tick.getHandle(), REAL, duration)
