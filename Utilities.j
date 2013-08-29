@@ -19,19 +19,17 @@ library Utilities initializer init needs Constants
 	function CombatText takes string s, real size, unit u, real r, real g, real b, real ang1, real ang2 returns nothing
 		local texttag t = null
 		local real angle = 0.
-		if IsUnitVisible(u, GetLocal()) then
-			set t = CreateTextTag()
-			set angle = GetRandomReal(ang1, ang2)
-			call SetTextTagText(t, s, size * 0.023 / 10)
-			call SetTextTagPosUnit(t, u, 0.)
-			call SetTextTagColor(t, PercentToInt(r, 255), PercentToInt(g, 255), PercentToInt(b, 255), 255)
-			call SetTextTagPermanent(t, false)
-			call SetTextTagVelocity(t, 0.035 * Cos(angle * bj_DEGTORAD), 0.035 * Sin(angle * bj_DEGTORAD))
-			call SetTextTagLifespan(t, 2.)
-			call SetTextTagFadepoint(t, 1.5)
-			call SetTextTagVisibility(t, true)
-			set t = null
-		endif
+		set t = CreateTextTag()
+		set angle = GetRandomReal(ang1, ang2)
+		call SetTextTagText(t, s, size * 0.023 / 10)
+		call SetTextTagPosUnit(t, u, 0.)
+		call SetTextTagColor(t, PercentToInt(r, 255), PercentToInt(g, 255), PercentToInt(b, 255), 255)
+		call SetTextTagPermanent(t, false)
+		call SetTextTagVelocity(t, 0.035 * Cos(angle * bj_DEGTORAD), 0.035 * Sin(angle * bj_DEGTORAD))
+		call SetTextTagLifespan(t, 2.)
+		call SetTextTagFadepoint(t, 1.5)
+		call SetTextTagVisibility(t, IsUnitVisible(u, GetLocal()))
+		set t = null
 	endfunction
 	
 	function DisplayTextToAll takes real duration, string text returns nothing

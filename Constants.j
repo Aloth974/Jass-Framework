@@ -24,6 +24,7 @@ library Constants initializer init
 		constant integer ITEM = 120
 		constant integer UNIT = 140
 		constant integer GROUP = 160
+		constant integer GROUP1 = 161
 		constant integer PLAYER = 180
 		constant integer FORCE = 200
 		constant integer EFFECT = 220
