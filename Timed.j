@@ -150,7 +150,7 @@ library Timed initializer init needs Ticker, Utilities, Unit
 		local Tick tick
 		local lightning l = null
 		if duration > 0. and caster != null and target != null then
-			set tick = Tick.create(duration * 0.1, 1, function CreateLightningBetweenUnitsTimedTick, false)
+			set tick = Tick.create(duration * 0.1, 10, function CreateLightningBetweenUnitsTimedTick, false)
 			set l = AddLightningEx(codeName, true, GetUnitX(caster), GetUnitY(caster), GetUnitZ(caster), GetUnitX(target), GetUnitY(target), GetUnitZ(target))
 			call HTSaveReal(tick.getHandle(), REAL, duration)
 			call HTSaveUnitHandle(tick.getHandle(), CASTER, caster)
