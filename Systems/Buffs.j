@@ -92,12 +92,11 @@ library Buffs initializer init needs Hashtable, Ticker, Unit
 	
 	function AddBuffTimedTick takes nothing returns nothing
 		local Tick tick = GetTicker()
-		local handle t = tick.getHandle()
-		local unit caster = HTLoadUnitHandle(t, CASTER)
-		local unit target = HTLoadUnitHandle(t, TARGET)
-		local integer abilid = HTLoadInteger(t, INTEGER)
-		local integer buffid = HTLoadInteger(t, INTEGER + 1)
-		local integer stack = HTLoadInteger(t, INTEGER + 2)
+		local unit caster = HTLoadUnitHandle(tick.getHandle(), CASTER)
+		local unit target = HTLoadUnitHandle(tick.getHandle(), TARGET)
+		local integer abilid = HTLoadInteger(tick.getHandle(), INTEGER)
+		local integer buffid = HTLoadInteger(tick.getHandle(), INTEGER + 1)
+		local integer stack = HTLoadInteger(tick.getHandle(), INTEGER + 2)
 		local integer abilvl = GetUnitAbilityLevel(target, abilid)
 		
 		if IsUnitDead(target) then
@@ -109,7 +108,7 @@ library Buffs initializer init needs Hashtable, Ticker, Unit
 		endif
 		if tick.isExpired() then
 			call onEvent(caster, target, abilid, buffid, abilvl, BuffEvent3)
-			if abilvl - stack > 0 then
+			if abilvl - stack > 0 and GetWidgetLife(target) > 0. then
 				call SetUnitAbilityLevel(target, abilid, abilvl - stack)
 			else
 				call UnitRemoveAbility(target, abilid)
@@ -118,13 +117,11 @@ library Buffs initializer init needs Hashtable, Ticker, Unit
 		endif
 		set target = null
 		set caster = null
-		set t = null
 	endfunction
 
 	function AddBuffTimed takes unit caster, unit target, real duration, integer abilid, integer buffid, integer stack returns nothing
 		local Tick tick = Tick.create(0.1, 10 * R2I(duration), function AddBuffTimedTick, false)
 		local integer abilvl = GetUnitAbilityLevel(target, abilid)
-		local handle t = tick.getHandle()
 		if stack <= 0 then
 			set stack = 1
 		endif
@@ -132,13 +129,12 @@ library Buffs initializer init needs Hashtable, Ticker, Unit
 			call UnitAddAbility(target, abilid)
 		endif
 		call SetUnitAbilityLevel(target, abilid, abilvl + stack)
-		call HTSaveUnitHandle(t, CASTER, caster)
-		call HTSaveUnitHandle(t, TARGET, target)
-		call HTSaveInteger(t, INTEGER, abilid)
-		call HTSaveInteger(t, INTEGER + 1, buffid)
-		call HTSaveInteger(t, INTEGER + 2, stack)
+		call HTSaveUnitHandle(tick.getHandle(), CASTER, caster)
+		call HTSaveUnitHandle(tick.getHandle(), TARGET, target)
+		call HTSaveInteger(tick.getHandle(), INTEGER, abilid)
+		call HTSaveInteger(tick.getHandle(), INTEGER + 1, buffid)
+		call HTSaveInteger(tick.getHandle(), INTEGER + 2, stack)
 		call tick.start()
-		set t = null
 	endfunction
 	
 	private function init takes nothing returns nothing
