@@ -82,7 +82,7 @@ library Trigger initializer init needs Hashtable, RecycleGroups, Ticker
 	function AStopWhenChannelEnd takes nothing returns nothing
 		local trigger trig = GetTriggeringTrigger()
 		local unit u = GetTriggerUnit()
-		local Tick tick = HTLoadInteger(u, ENDCHANNEL)
+		local Tick tick = GetTickerByTrigger(HTLoadTriggerHandle(u, ENDCHANNEL))
 		if not tick.isExpired() then
 			call tick.stop()
 			call tick.exec()
@@ -98,7 +98,7 @@ library Trigger initializer init needs Hashtable, RecycleGroups, Ticker
 	
 	function StopWhenChannelEnd takes unit u, Tick tick, boolexpr filter returns nothing
 		local trigger trig = CreateTrigger()
-		call HTSaveInteger(u, ENDCHANNEL, tick)
+		call HTSaveTriggerHandle(u, ENDCHANNEL, tick.getTrigger())
 		call HTSaveTriggerActionHandle(trig, TRIGGERACTION, TriggerAddAction(trig, function AStopWhenChannelEnd))
 		call HTSaveTriggerConditionHandle(trig, TRIGGERCONDITION, TriggerAddCondition(trig, filter))
 		call TriggerRegisterUnitEvent(trig, u, EVENT_UNIT_SPELL_ENDCAST)
